@@ -33,7 +33,8 @@ public class Categories {
         sportQuestions.add(sport2);
         geographyQuestions.add(geography1);
         geographyQuestions.add(geography2);
-        allQuestions.add(Arrays.asList(sport1, geography1));
+        allQuestions.add(sportQuestions);
+        allQuestions.add(geographyQuestions);
     }
 
     public List<Question> getCategory(int category) {
