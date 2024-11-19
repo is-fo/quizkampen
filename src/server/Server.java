@@ -24,7 +24,6 @@ public class Server implements Runnable {
                     clientSockets[clientIndex] = clientSocket;
                     System.out.println("Client " + clientIndex + " connected");
 
-
                     clientIndex++;
                 }
             }
