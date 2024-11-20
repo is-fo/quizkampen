@@ -1,15 +1,8 @@
 package server;
 
-
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-
-import static server.Categories.*;
 
 public class ServerProtocol implements Runnable {
     private static final int WAITING = 0;
