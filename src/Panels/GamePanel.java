@@ -3,7 +3,8 @@ package Panels;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.List;
 
 public class GamePanel extends MasterPanel {
     private final CardLayout cardLayout = new CardLayout();
@@ -25,8 +26,9 @@ public class GamePanel extends MasterPanel {
     private int currentQuestionIndex = 0;
     private List<Question> questions = new ArrayList<>();
 
-    public GamePanel(){
+    public GamePanel() {
         setPanel();
+        setCategoryButtonActions();
     }
 
     @Override
@@ -50,6 +52,11 @@ public class GamePanel extends MasterPanel {
         add(mainPanel, BorderLayout.CENTER);
     }
 
+    @Override
+    public void setActionListener(ActionListener actionListener) {
+
+    }
+
     private void setupCategoryPanel() {
         categoryPanel.setLayout(new GridLayout(3, 1, 10, 10));
         categoryPanel.setBackground(backgroundColor);
@@ -67,12 +74,10 @@ public class GamePanel extends MasterPanel {
         questionPanel.setLayout(new BorderLayout());
         questionPanel.setBackground(backgroundColor);
 
-        // Frågetext
         questionLabel.setFont(buttonFont);
         questionLabel.setHorizontalAlignment(SwingConstants.CENTER);
         questionPanel.add(questionLabel, BorderLayout.NORTH);
 
-        // Svarsknappar
         answerPanel.setBackground(backgroundColor);
         for (int i = 0; i < answerButtons.length; i++) {
             answerButtons[i] = new AnswerButton();
@@ -81,21 +86,41 @@ public class GamePanel extends MasterPanel {
         }
         questionPanel.add(answerPanel, BorderLayout.CENTER);
 
-
         nextQuestionButton.setFont(buttonFont);
         questionPanel.add(nextQuestionButton, BorderLayout.SOUTH);
     }
 
-    public void setCategoriesActionListener(ActionListener actionListener) {
-        category1Button.addActionListener(actionListener);
-        category2Button.addActionListener(actionListener);
-        category3Button.addActionListener(actionListener);
-    }
-
     public void setQuestionActionListener(ActionListener actionListener) {
-        nextQuestionButton.addActionListener(actionListener);
+        nextQuestionButton.addActionListener(e -> {
+            showNextQuestion();
+
+            for (JButton button : answerButtons) {
+                button.setBackground(null);
+                button.setEnabled(true);
+            }
+            nextQuestionButton.setEnabled(false);
+        });
+
         for (AnswerButton answerButton : answerButtons) {
-            answerButton.addActionListener(actionListener);
+            answerButton.addActionListener(e -> {
+                AnswerButton clickedButton = (AnswerButton) e.getSource();
+                boolean isCorrect = clickedButton.isCorrect();
+
+
+                if (isCorrect) {
+                    clickedButton.setBackground(Color.GREEN);
+                    JOptionPane.showMessageDialog(this, "Rätt svar!");
+                } else {
+                    clickedButton.setBackground(Color.RED);
+                    JOptionPane.showMessageDialog(this, "Fel svar!");
+                }
+
+                for (JButton button : answerButtons) {
+                    button.setEnabled(false);
+                }
+
+                nextQuestionButton.setEnabled(true);
+            });
         }
     }
 
@@ -123,36 +148,78 @@ public class GamePanel extends MasterPanel {
             List<AnswerAlternative> answers = question.getAnswerAlternatives();
             for (int i = 0; i < answers.size(); i++) {
                 answerButtons[i].setButton(answers.get(i));
-                answerButtons[i].setBackground(null);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Spelet är slut!");
+            JOptionPane.showMessageDialog(this, "Återvänder till kategorier.");
             showCategoryPanel();
         }
     }
 
-    public void showCorrectAnswer() {
-        for (AnswerButton button : answerButtons) {
-            if (button.isCorrect()) {
-                button.setBackground(Color.GREEN);
-            }
+    private void setCategoryButtonActions() {
+        // Lägg till en ActionListener för varje kategori-knapp
+        category1Button.addActionListener(e -> {
+            loadSampleQuestionsForCategory("Kategori 1"); // Ladda frågor för kategori 1
+            showQuestionPanel(); // Växla till frågepanelen
+        });
+
+        category2Button.addActionListener(e -> {
+            loadSampleQuestionsForCategory("Kategori 2");
+            showQuestionPanel();
+        });
+
+        category3Button.addActionListener(e -> {
+            loadSampleQuestionsForCategory("Kategori 3");
+            showQuestionPanel();
+        });
+    }
+    // Tillfällig funktion för att ladda exempeldata beroende på kategori
+    private void loadSampleQuestionsForCategory(String category) {
+        List<Question> sampleQuestions = new ArrayList<>();
+        if (category.equals("Kategori 1")) {
+            sampleQuestions.add(new Question("Vad är 2 + 2?",
+                    List.of(
+                            new AnswerAlternative("3", false),
+                            new AnswerAlternative("4", true),
+                            new AnswerAlternative("5", false),
+                            new AnswerAlternative("6", false)
+                    )
+            ));
+        } else if (category.equals("Kategori 2")) {
+            sampleQuestions.add(new Question("Vilken färg har himlen?",
+                    List.of(
+                            new AnswerAlternative("Grön", false),
+                            new AnswerAlternative("Blå", true),
+                            new AnswerAlternative("Röd", false),
+                            new AnswerAlternative("Gul", false)
+                    )
+            ));
+        } else if (category.equals("Kategori 3")) {
+            sampleQuestions.add(new Question("Vilket år blev Sverige självständigt?",
+                    List.of(
+                            new AnswerAlternative("1523", true),
+                            new AnswerAlternative("1809", false),
+                            new AnswerAlternative("1905", false),
+                            new AnswerAlternative("1945", false)
+                    )
+            ));
         }
+        loadQuestions(sampleQuestions); // Ladda de valda frågorna i panelen
     }
 
-    public void showWrongAnswer(AnswerButton clickedButton) {
-        clickedButton.setBackground(Color.RED);
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("QuizKampen");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(800, 600);
+            GamePanel gamePanel = new GamePanel();
+            gamePanel.setQuestionActionListener(null);
+            frame.add(gamePanel);
+            frame.setVisible(true);
+        });
     }
-
-
-public static void main(String[] args) {
-    SwingUtilities.invokeLater(() -> {
-        JFrame frame = new JFrame("QuizKampen");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        frame.add(new GamePanel());
-        frame.setVisible(true);
-    });
-  }
 }
+
+
+
 
 
