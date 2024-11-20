@@ -54,7 +54,7 @@ public class Categories implements Serializable {
         };
     }
 
-    public int getCategory(String category) {
+    public int getCategoryInt(String category) {
         return switch(category){
             case "Sport" -> SPORT;
             case "Geography" -> GEOGRAPHY;
