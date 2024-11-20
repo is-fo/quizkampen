@@ -7,33 +7,54 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server implements Runnable {
-    public final int PORT = 55555;
+    public static final int PORT = 55555;
+    public static final int MAX_CLIENTS = 2;
 
-    Socket[] clientSockets = new Socket[2];
-    ServerProtocol[] serverProtocols = new ServerProtocol[2];
-    ObjectInputStream[] in;
-    ObjectOutputStream[] out;
+    private int clientCount = 0;
 
-    private void startServer() {
+    Socket[] clientSockets = new Socket[MAX_CLIENTS];
+    ServerProtocol[] serverProtocols = new ServerProtocol[MAX_CLIENTS];
+    ObjectInputStream[] in = new ObjectInputStream[MAX_CLIENTS];
+    ObjectOutputStream[] out = new ObjectOutputStream[MAX_CLIENTS];
+
+    private void startServer(ServerSocket serverSocket) {
         try {
             int clientIndex = 0;
-            try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-                while ((clientSockets[0] == null && clientSockets[1] == null) || clientIndex < clientSockets.length) {
-                    Socket clientSocket;
-                    clientSocket = serverSocket.accept();
+             while (clientIndex < MAX_CLIENTS) {
+                 System.out.println("Listening for client connection...");
+                Socket clientSocket;
+                clientSocket = serverSocket.accept();
+                clientSockets[clientIndex] = clientSocket;
+                 System.out.println("Client " + (clientIndex + 2) + "/" + MAX_CLIENTS + " connected." );
+                 System.out.println("Total amount of clients: " + ++clientCount);
 
-                    clientSockets[clientIndex] = clientSocket;
-                    in[clientIndex] = new ObjectInputStream(clientSocket.getInputStream());
-                    out[clientIndex] = new ObjectOutputStream(clientSocket.getOutputStream());
-                    System.out.println("Client " + clientIndex + " connected");
-                    ServerProtocol protocol = new ServerProtocol(clientSocket);
-                    serverProtocols[clientIndex] = protocol;
-//                    if (clientIndex == 0) {
-//                        new Thread(serverProtocols[0]).start();
-//                    }
+                in[clientIndex] = new ObjectInputStream(clientSocket.getInputStream());
+                out[clientIndex] = new ObjectOutputStream(clientSocket.getOutputStream());
 
-                    clientIndex++;
-                }
+                System.out.println("Client " + clientIndex + " connected");
+                ServerProtocol protocol = new ServerProtocol(clientSocket);
+                serverProtocols[clientIndex] = protocol;
+
+                clientIndex++;
+
+            }
+
+            System.out.println("Two clients connected.");
+             new Thread(new GameLogic(clientSockets, in, out, serverProtocols)).start();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error accepting client connections: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void run() {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("Server started on port: " + PORT);
+
+            while (true) {
+                startServer(serverSocket);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -41,31 +62,8 @@ public class Server implements Runnable {
         }
     }
 
-    private void handleClients() {
-        GameState gameState = new GameState(1, 2);
-        int currentClient = 0;
-
-        while (true) {
-            try {
-                Object o;
-                while ((o = in[currentClient].readObject()) != null) {
-                    out[currentClient].writeObject(serverProtocols[currentClient].processInput(o, currentClient, gameState));
-                    System.out.println("Sent:  " + o + " to client: " + currentClient);
-                    if (o instanceof GameState) {
-                        currentClient = (currentClient + 1) % 2; //nextClient()
-                    }
-                }
-            } catch (ClassNotFoundException e) {
-                System.err.println("Error reading object: " + e.getMessage());
-            } catch (IOException e) {
-                System.err.println("Error writing to server: " + e.getMessage());
-            }
-        }
-    }
-
-    @Override
-    public void run() {
-        startServer();
-        handleClients();
+    public static void main(String[] args) {
+        Server server = new Server();
+        new Thread(server).start();
     }
 }
