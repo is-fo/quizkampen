@@ -1,10 +1,12 @@
 package server;
 
+import javax.print.DocFlavor;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Categories {
+public class Categories implements Serializable {
 
     public static final int SPORT = 0;
     public static final int GEOGRAPHY = 1;
@@ -54,6 +56,10 @@ public class Categories {
 
     public void setCurrentCategory(List<Question> category) {
         currentQuestions = category;
+    }
+
+    public List<Question> getCurrentCategory() {
+        return currentQuestions;
     }
 
     public List<Question> getNQuestions(int amount, int category) {
