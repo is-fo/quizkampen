@@ -1,5 +1,7 @@
 package server;
 
+import client.Connected;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -32,8 +34,15 @@ public class Server implements Runnable {
                 out[clientIndex] = new ObjectOutputStream(clientSocket.getOutputStream());
 
                 out[clientIndex].writeObject(new Intro());
+                 try {
+                     if (in[clientIndex].readObject() instanceof Connected) {
+                         System.out.println("Connection OK for client " + (clientIndex + 1));
+                     }
+                 } catch (ClassNotFoundException e) {
+                     System.err.println("ClassNotFoundException: " + e.getMessage());
+                 }
 
-                ServerProtocol protocol = new ServerProtocol(clientSocket);
+                 ServerProtocol protocol = new ServerProtocol(clientSocket);
                 serverProtocols[clientIndex] = protocol;
 
                 clientIndex++;

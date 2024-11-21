@@ -1,7 +1,5 @@
 package server;
 
-import client.Connected;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -29,11 +27,10 @@ public class GameLogic implements Runnable {
 
         while (true) {
             try {
+                System.out.println("Run started in GameLogic");
                 Object o;
                 while ((o = in[currentClient].readObject()) != null) {
-                    if (o instanceof Connected) {
-                        System.out.println("Client connection OK");
-                    }
+                    System.out.println("While loop entered in GameLogic");
                     Object processed;
                     processed = serverProtocols[currentClient].processInput(o, currentClient, gameState);
                     out[currentClient].writeObject(processed);
