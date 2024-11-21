@@ -3,6 +3,8 @@ package server;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+
 import static server.Categories.*;
 
 public class GameState implements Serializable {
@@ -10,6 +12,8 @@ public class GameState implements Serializable {
     private List<Score> playerScores = new ArrayList<>();
     private int currentRound = 0;
     private int category = SPORT;
+
+
 
     public GameState(int numRounds, int numQuestions) {
 
