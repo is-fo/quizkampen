@@ -25,13 +25,14 @@ public class Server implements Runnable {
                 Socket clientSocket;
                 clientSocket = serverSocket.accept();
                 clientSockets[clientIndex] = clientSocket;
-                 System.out.println("Client " + (clientIndex + 2) + "/" + MAX_CLIENTS + " connected." );
+                 System.out.println("Client " + (clientIndex + 1) + "/" + MAX_CLIENTS + " connected." );
                  System.out.println("Total amount of clients: " + ++clientCount);
 
                 in[clientIndex] = new ObjectInputStream(clientSocket.getInputStream());
                 out[clientIndex] = new ObjectOutputStream(clientSocket.getOutputStream());
 
-                System.out.println("Client " + clientIndex + " connected");
+                out[clientIndex].writeObject(new Intro());
+
                 ServerProtocol protocol = new ServerProtocol(clientSocket);
                 serverProtocols[clientIndex] = protocol;
 

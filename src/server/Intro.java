@@ -1,4 +1,6 @@
 package server;
 
-public class Intro {
+import java.io.Serializable;
+
+public class Intro implements Serializable {
 }
