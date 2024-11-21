@@ -1,12 +1,13 @@
 package server;
 
+import pojos.Question;
+
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ServerProtocol implements Runnable {
-    
-    private static final int INTRO = -1;
+
     private static final int WAITING = 0;
     private static final int CHOOSE_CATEGORY = 1;
     private static final int CATEGORY_CHOSEN = 11;
@@ -14,7 +15,7 @@ public class ServerProtocol implements Runnable {
     private static final int SHOW_RESULTS = 3;
     private static final int ANSWER_QUESTION = 4;
 
-    private int state = INTRO;
+    private int state = WAITING;
     private Categories categories = new Categories();
     private List<Question> currentQuestions = new ArrayList<>(2);
 
@@ -53,6 +54,7 @@ public class ServerProtocol implements Runnable {
             output = currentQuestions;
             state = SHOW_RESULTS;
         } else if (state == SHOW_RESULTS) {
+            //TODO vilka frågor man hade rätt på
             gameState.updatePlayerScores(player, (Integer) input);
 
             output = gameState.getResults();
