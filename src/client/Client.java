@@ -1,6 +1,7 @@
 package client;
 
-import server.Intro;
+import pojos.Connected;
+import pojos.Intro;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

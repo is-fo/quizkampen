@@ -1,4 +1,4 @@
-package client;
+package pojos;
 
 import java.io.Serializable;
 

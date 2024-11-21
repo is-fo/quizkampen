@@ -1,6 +1,7 @@
 package server;
 
 import pojos.Question;
+import pojos.Waiting;
 
 import java.net.Socket;
 import java.util.ArrayList;
