@@ -35,36 +35,21 @@ public class GamePanel extends MasterPanel {
     public void setPanel() {
         setLayout(new BorderLayout());
         mainPanel.setBackground(backgroundColor);
-
-        // Ställ in kategori-panelen
         setupCategoryPanel();
-
-        // Ställ in fråge-panelen
         setupQuestionPanel();
-
-        // Lägg till båda panelerna i CardLayout
         mainPanel.add(categoryPanel, "CategoryPanel");
         mainPanel.add(questionPanel, "QuestionPanel");
-
-        // Visa kategori-panelen först
         cardLayout.show(mainPanel, "CategoryPanel");
-
         add(mainPanel, BorderLayout.CENTER);
     }
 
     @Override
     public void setActionListener(ActionListener actionListener) {
-
     }
 
     private void setupCategoryPanel() {
         categoryPanel.setLayout(new GridLayout(3, 1, 10, 10));
         categoryPanel.setBackground(backgroundColor);
-
-        category1Button.setFont(buttonFont);
-        category2Button.setFont(buttonFont);
-        category3Button.setFont(buttonFont);
-
         categoryPanel.add(category1Button);
         categoryPanel.add(category2Button);
         categoryPanel.add(category3Button);
@@ -73,20 +58,17 @@ public class GamePanel extends MasterPanel {
     private void setupQuestionPanel() {
         questionPanel.setLayout(new BorderLayout());
         questionPanel.setBackground(backgroundColor);
-
         questionLabel.setFont(buttonFont);
         questionLabel.setHorizontalAlignment(SwingConstants.CENTER);
         questionPanel.add(questionLabel, BorderLayout.NORTH);
-
         answerPanel.setBackground(backgroundColor);
+
         for (int i = 0; i < answerButtons.length; i++) {
             answerButtons[i] = new AnswerButton();
             answerButtons[i].setFont(buttonFont);
             answerPanel.add(answerButtons[i]);
         }
         questionPanel.add(answerPanel, BorderLayout.CENTER);
-
-        nextQuestionButton.setFont(buttonFont);
         questionPanel.add(nextQuestionButton, BorderLayout.SOUTH);
     }
 
@@ -106,19 +88,11 @@ public class GamePanel extends MasterPanel {
                 AnswerButton clickedButton = (AnswerButton) e.getSource();
                 boolean isCorrect = clickedButton.isCorrect();
 
-
-                if (isCorrect) {
-                    clickedButton.setBackground(Color.GREEN);
-                    JOptionPane.showMessageDialog(this, "Rätt svar!");
-                } else {
-                    clickedButton.setBackground(Color.RED);
-                    JOptionPane.showMessageDialog(this, "Fel svar!");
-                }
-
+                clickedButton.setBackground(isCorrect ? Color.GREEN : Color.RED);
+                JOptionPane.showMessageDialog(this, isCorrect ? "Rätt svar!" : "Fel svar!");
                 for (JButton button : answerButtons) {
                     button.setEnabled(false);
                 }
-
                 nextQuestionButton.setEnabled(true);
             });
         }
@@ -127,18 +101,15 @@ public class GamePanel extends MasterPanel {
     public void showCategoryPanel() {
         cardLayout.show(mainPanel, "CategoryPanel");
     }
-
     public void showQuestionPanel() {
         cardLayout.show(mainPanel, "QuestionPanel");
     }
-
     //Tillfällig
     public void loadQuestions(List<Question> questions) {
         this.questions = questions;
         currentQuestionIndex = 0;
         showNextQuestion();
     }
-
     //Tillfällig
     public void showNextQuestion() {
         if (currentQuestionIndex < questions.size()) {
@@ -154,19 +125,15 @@ public class GamePanel extends MasterPanel {
             showCategoryPanel();
         }
     }
-
     private void setCategoryButtonActions() {
-        // Lägg till en ActionListener för varje kategori-knapp
         category1Button.addActionListener(e -> {
             loadSampleQuestionsForCategory("Kategori 1"); // Ladda frågor för kategori 1
             showQuestionPanel(); // Växla till frågepanelen
         });
-
         category2Button.addActionListener(e -> {
             loadSampleQuestionsForCategory("Kategori 2");
             showQuestionPanel();
         });
-
         category3Button.addActionListener(e -> {
             loadSampleQuestionsForCategory("Kategori 3");
             showQuestionPanel();

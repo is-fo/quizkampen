@@ -3,7 +3,7 @@ package Panels;
 import javax.swing.*;
 import java.awt.*;
 
-abstract public class MasterPanel extends JFrame implements IPanel{
+abstract public class MasterPanel extends JPanel implements IPanel{
 
     protected JLabel logoLabel = new JLabel("QuizKampen");
     protected Color logoColor = new Color(118, 0, 150);
@@ -14,15 +14,14 @@ abstract public class MasterPanel extends JFrame implements IPanel{
     protected Color nuance = new Color(0, 150, 85);
 
     public MasterPanel() {
-        setSize(800, 800);
-        setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        logoLabel.setFont(new Font("Arial Black", Font.BOLD, 16));
-        logoLabel.setHorizontalAlignment(JLabel.CENTER);
+        setLayout(new BorderLayout());
+        setPreferredSize(new Dimension(800, 800));
+        logoLabel.setFont(logoFont);
+        logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
         logoLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));
         add(logoLabel, BorderLayout.NORTH);
+        setBackground(backgroundColor);
     }
-
 
     @Override
     public void setCustomColor(Color backgroundColor, Color logoColor, Color infoTextColor, Color nuance) {
@@ -30,10 +29,19 @@ abstract public class MasterPanel extends JFrame implements IPanel{
         this.logoColor = logoColor;
         this.infoTextColor = infoTextColor;
         this.nuance = nuance;
-        removeAll();
-        setPanel();
+        updateColors();
+    }
+
+    private void updateColors() {
+        setBackground(backgroundColor);
+        logoLabel.setForeground(logoColor);
         revalidate();
         repaint();
+    }
+
+    public void setLogoFont(Font font) {
+        this.logoFont = font;
+        logoLabel.setFont(font);
     }
 
     @Override

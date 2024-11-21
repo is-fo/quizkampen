@@ -2,14 +2,13 @@ package Panels;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
-public class ResultPanel extends JFrame{
+
+public class ResultPanel extends JPanel {
     private JLabel[] player1Scores;
     private JLabel[] categories;
     private JLabel[] player2Scores;
     private JButton playAgainButton;
-
 
     public ResultPanel(String player1Name, String player2Name) {
         setLayout(new BorderLayout());
@@ -34,7 +33,7 @@ public class ResultPanel extends JFrame{
         }
 
         playAgainButton = new JButton("Spela igen");
-
+        playAgainButton.addActionListener(e -> reset());
         add(resultPanel, BorderLayout.CENTER);
         add(playAgainButton, BorderLayout.SOUTH);
 
@@ -61,11 +60,16 @@ public class ResultPanel extends JFrame{
     }
 
     public static void main(String[] args) {
-        ResultPanel rp = new ResultPanel();
-        JFrame frame = new JFrame("QuizKampen");
+        JFrame frame = new JFrame("QuizKampen Resultat");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ResultPanel resultPanel = new ResultPanel("Spelare 1", "Spelare 2");
+        frame.add(resultPanel);
         frame.setSize(800, 600);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        // Exempel på att uppdatera resultat
+        resultPanel.updateRound(1, 10, 5, "Geografi");
+        resultPanel.updateRound(2, 20, 15, "Historia");
 
     }
 }
