@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Client {
 
-    Client()  {
+    Client() {
         String hostName = "172.20.206.165";
         int portNumber = 55555;
 
@@ -63,22 +63,25 @@ public class Client {
                     oos.writeObject(fromServer);
                 } else if (fromServer instanceof Waiting) {
                     System.out.println("Tjena");
-                        wait();
-                } else if (fromServer instanceof List<Question>) {
-                    System.out.println("Han är lugn");
-                }else if (fromServer instanceof GameState) {
-                    System.out.println("Spelstatus");
-            }
-            }
-        } catch( EOFException e){
-            System.out.println("Servern stängde anslutningen.");
-        }catch(Exception e){
-            e.printStackTrace();
-        }
 
+                } else if (fromServer instanceof List<?>) {
+                    List<?> receivedList = (List<?>) fromServer;
+                    if (!receivedList.isEmpty() && receivedList.get(0) instanceof Question) {
+                        List<Question> questions = (List<Question>) receivedList;
+                        System.out.println("Han är lugn");
+                        for (Question q : questions) {
+                            System.out.println(q.getQuestion());
+                        }
+                    } else if (fromServer instanceof GameState) {
+                        System.out.println("Spelstatus");
+                    }
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error reading object from server: " + e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        public static void main(String[] args) {
-        Client client = new Client();
     }
 }
 
