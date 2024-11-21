@@ -1,4 +1,4 @@
-package server;
+package pojos;
 
 import java.io.Serializable;
 

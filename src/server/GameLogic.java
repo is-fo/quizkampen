@@ -1,5 +1,7 @@
 package server;
 
+import pojos.Intro;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -51,6 +53,7 @@ public class GameLogic implements Runnable {
             } catch (ClassNotFoundException e) {
                 System.err.println("Error reading object: " + e.getMessage());
             } catch (IOException e) {
+                e.printStackTrace();
                 System.err.println("Error reading from client: " + e.getMessage());
                 clientCount--;
                 System.out.println("Client disconnected, new total: " + clientCount);
