@@ -24,11 +24,9 @@ public class GamePanel extends MasterPanel {
 
     // Data för frågor och svar (vår data/logik)?
     private int currentQuestionIndex = 0;
-    private List<Question> questions = new ArrayList<>();
 
     public GamePanel() {
         setPanel();
-        setCategoryButtonActions();
     }
 
     @Override
@@ -72,31 +70,7 @@ public class GamePanel extends MasterPanel {
         questionPanel.add(nextQuestionButton, BorderLayout.SOUTH);
     }
 
-    public void setQuestionActionListener(ActionListener actionListener) {
-        nextQuestionButton.addActionListener(e -> {
-            showNextQuestion();
 
-            for (JButton button : answerButtons) {
-                button.setBackground(null);
-                button.setEnabled(true);
-            }
-            nextQuestionButton.setEnabled(false);
-        });
-
-        for (AnswerButton answerButton : answerButtons) {
-            answerButton.addActionListener(e -> {
-                AnswerButton clickedButton = (AnswerButton) e.getSource();
-                boolean isCorrect = clickedButton.isCorrect();
-
-                clickedButton.setBackground(isCorrect ? Color.GREEN : Color.RED);
-                JOptionPane.showMessageDialog(this, isCorrect ? "Rätt svar!" : "Fel svar!");
-                for (JButton button : answerButtons) {
-                    button.setEnabled(false);
-                }
-                nextQuestionButton.setEnabled(true);
-            });
-        }
-    }
 
     public void showCategoryPanel() {
         cardLayout.show(mainPanel, "CategoryPanel");
@@ -104,74 +78,8 @@ public class GamePanel extends MasterPanel {
     public void showQuestionPanel() {
         cardLayout.show(mainPanel, "QuestionPanel");
     }
-    //Tillfällig
-    public void loadQuestions(List<Question> questions) {
-        this.questions = questions;
-        currentQuestionIndex = 0;
-        showNextQuestion();
-    }
-    //Tillfällig
-    public void showNextQuestion() {
-        if (currentQuestionIndex < questions.size()) {
-            Question question = questions.get(currentQuestionIndex++);
-            questionLabel.setText(question.getQuestionQ());
 
-            List<AnswerAlternative> answers = question.getAnswerAlternatives();
-            for (int i = 0; i < answers.size(); i++) {
-                answerButtons[i].setButton(answers.get(i));
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Återvänder till kategorier.");
-            showCategoryPanel();
-        }
-    }
-    private void setCategoryButtonActions() {
-        category1Button.addActionListener(e -> {
-            loadSampleQuestionsForCategory("Kategori 1"); // Ladda frågor för kategori 1
-            showQuestionPanel(); // Växla till frågepanelen
-        });
-        category2Button.addActionListener(e -> {
-            loadSampleQuestionsForCategory("Kategori 2");
-            showQuestionPanel();
-        });
-        category3Button.addActionListener(e -> {
-            loadSampleQuestionsForCategory("Kategori 3");
-            showQuestionPanel();
-        });
-    }
-    // Tillfällig funktion för att ladda exempeldata beroende på kategori
-    private void loadSampleQuestionsForCategory(String category) {
-        List<Question> sampleQuestions = new ArrayList<>();
-        if (category.equals("Kategori 1")) {
-            sampleQuestions.add(new Question("Vad är 2 + 2?",
-                    List.of(
-                            new AnswerAlternative("3", false),
-                            new AnswerAlternative("4", true),
-                            new AnswerAlternative("5", false),
-                            new AnswerAlternative("6", false)
-                    )
-            ));
-        } else if (category.equals("Kategori 2")) {
-            sampleQuestions.add(new Question("Vilken färg har himlen?",
-                    List.of(
-                            new AnswerAlternative("Grön", false),
-                            new AnswerAlternative("Blå", true),
-                            new AnswerAlternative("Röd", false),
-                            new AnswerAlternative("Gul", false)
-                    )
-            ));
-        } else if (category.equals("Kategori 3")) {
-            sampleQuestions.add(new Question("Vilket år blev Sverige självständigt?",
-                    List.of(
-                            new AnswerAlternative("1523", true),
-                            new AnswerAlternative("1809", false),
-                            new AnswerAlternative("1905", false),
-                            new AnswerAlternative("1945", false)
-                    )
-            ));
-        }
-        loadQuestions(sampleQuestions); // Ladda de valda frågorna i panelen
-    }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -179,7 +87,6 @@ public class GamePanel extends MasterPanel {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(800, 600);
             GamePanel gamePanel = new GamePanel();
-            gamePanel.setQuestionActionListener(null);
             frame.add(gamePanel);
             frame.setVisible(true);
         });

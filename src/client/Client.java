@@ -1,8 +1,9 @@
 package client;
 
+import pojos.Question;
 import server.GameState;
 import server.Intro;
-import server.Question;
+
 import server.Waiting;
 
 import java.io.EOFException;
@@ -82,6 +83,10 @@ public class Client {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void main(String[] args) {
+        new Client();
     }
 }
 
