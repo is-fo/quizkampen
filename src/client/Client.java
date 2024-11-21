@@ -1,9 +1,7 @@
 package client;
 
-import server.Waiting;
+import server.Intro;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -15,16 +13,14 @@ public class Client {
         int portNumber = 55555;
 
         try (
-                Socket addressSocket = new Socket(hostName, portNumber);
-                ObjectOutputStream oos = new ObjectOutputStream(addressSocket.getOutputStream());
-                ObjectInputStream ois = new ObjectInputStream(addressSocket.getInputStream());) {
-
-            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+            Socket addressSocket = new Socket(hostName, portNumber);
+            ObjectOutputStream oos = new ObjectOutputStream(addressSocket.getOutputStream());
+            ObjectInputStream ois = new ObjectInputStream(addressSocket.getInputStream());) {
 
             Object fromServer;
             while ((fromServer = ois.readObject()) != null) {
                 System.out.println("hej");
-                if (fromServer instanceof Waiting) {
+                if (fromServer instanceof Intro) {
                     System.out.println("Anslutning upprättad ");
                     oos.writeObject(new Connected());
                 }
