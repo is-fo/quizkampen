@@ -1,4 +1,6 @@
 package server;
 
-public class Waiting {
+import java.io.Serializable;
+
+public class Waiting implements Serializable {
 }

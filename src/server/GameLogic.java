@@ -1,5 +1,7 @@
 package server;
 
+import client.Connected;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -29,6 +31,9 @@ public class GameLogic implements Runnable {
             try {
                 Object o;
                 while ((o = in[currentClient].readObject()) != null) {
+                    if (o instanceof Connected) {
+                        System.out.println("Client connection OK");
+                    }
                     Object processed;
                     processed = serverProtocols[currentClient].processInput(o, currentClient, gameState);
                     out[currentClient].writeObject(processed);
@@ -40,7 +45,8 @@ public class GameLogic implements Runnable {
             } catch (ClassNotFoundException e) {
                 System.err.println("Error reading object: " + e.getMessage());
             } catch (IOException e) {
-                System.err.println("Error writing to server: " + e.getMessage());
+                System.err.println("Error reading from client: " + e.getMessage());
+                break;
             }
         }
     }

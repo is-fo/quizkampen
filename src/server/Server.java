@@ -20,18 +20,19 @@ public class Server implements Runnable {
     private void startServer(ServerSocket serverSocket) {
         try {
             int clientIndex = 0;
-            while (clientIndex < MAX_CLIENTS) {
-                System.out.println("Listening for client connection...");
+             while (clientIndex < MAX_CLIENTS) {
+                 System.out.println("Listening for client connection...");
                 Socket clientSocket;
                 clientSocket = serverSocket.accept();
                 clientSockets[clientIndex] = clientSocket;
-                System.out.println("client " + (clientIndex + 2) + "/" + MAX_CLIENTS + " connected.");
-                System.out.println("Total amount of clients: " + ++clientCount);
+                 System.out.println("Client " + (clientIndex + 1) + "/" + MAX_CLIENTS + " connected." );
+                 System.out.println("Total amount of clients: " + ++clientCount);
 
                 in[clientIndex] = new ObjectInputStream(clientSocket.getInputStream());
                 out[clientIndex] = new ObjectOutputStream(clientSocket.getOutputStream());
 
-                System.out.println("client " + clientIndex + " connected");
+                out[clientIndex].writeObject(new Intro());
+
                 ServerProtocol protocol = new ServerProtocol(clientSocket);
                 serverProtocols[clientIndex] = protocol;
 
@@ -40,7 +41,7 @@ public class Server implements Runnable {
             }
 
             System.out.println("Two clients connected.");
-            new Thread(new GameLogic(clientSockets, in, out, serverProtocols)).start();
+             new Thread(new GameLogic(clientSockets, in, out, serverProtocols)).start();
 
         } catch (IOException e) {
             e.printStackTrace();
