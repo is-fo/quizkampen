@@ -2,10 +2,12 @@ package server;
 
 import pojos.Intro;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Properties;
 
 import static server.Server.*;
 import static server.Server.MAX_CLIENTS;
@@ -25,7 +27,17 @@ public class GameLogic implements Runnable {
 
     @Override
     public void run() {
-        GameState gameState = new GameState(1, 2);
+        Properties p = new Properties();
+        try {
+            p.load(new FileInputStream("src/PropertiesDemo/DemoProperties.properties"));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        int roundsPerGame = Integer.parseInt(p.getProperty("roundsPerGame", "2"));
+        int questionsPerRound = Integer.parseInt(p.getProperty("questionsPerRound", "2"));
+
+        GameState gameState = new GameState(roundsPerGame, questionsPerRound);
         int currentClient = 0;
 
         for (int i = 0; i < MAX_CLIENTS; i++) {
