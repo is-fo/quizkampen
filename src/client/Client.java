@@ -3,6 +3,8 @@ package client;
 import pojos.Question;
 import server.GameState;
 import server.Intro;
+import pojos.Connected;
+import pojos.Intro;
 
 import server.Waiting;
 

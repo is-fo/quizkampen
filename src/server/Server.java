@@ -1,7 +1,5 @@
 package server;
 
-import client.Connected;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

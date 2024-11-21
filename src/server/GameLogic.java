@@ -1,11 +1,11 @@
 package server;
 
-import java.io.FileInputStream;
+import pojos.Intro;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Properties;
 
 import static server.Server.*;
 import static server.Server.MAX_CLIENTS;
@@ -25,25 +25,8 @@ public class GameLogic implements Runnable {
 
     @Override
     public void run() {
-        Properties p = new Properties();
-        try {
-            p.load(new FileInputStream("src/PropertiesDemo/DemoProperties.properties"));
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        int roundsPerGame = Integer.parseInt(p.getProperty("roundsPerGame", "2"));
-        int questionsPerRound = Integer.parseInt(p.getProperty("questionsPerRound", "2"));
-
-        GameState gameState = new GameState(roundsPerGame, questionsPerRound);
+        GameState gameState = new GameState(1, 2);
         int currentClient = 0;
-        for (int i = 0; i < MAX_CLIENTS; i++) {
-            try {
-                out[i].writeObject(p);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
 
         for (int i = 0; i < MAX_CLIENTS; i++) {
             try {
@@ -70,6 +53,7 @@ public class GameLogic implements Runnable {
             } catch (ClassNotFoundException e) {
                 System.err.println("Error reading object: " + e.getMessage());
             } catch (IOException e) {
+                e.printStackTrace();
                 System.err.println("Error reading from client: " + e.getMessage());
                 clientCount--;
                 System.out.println("Client disconnected, new total: " + clientCount);
