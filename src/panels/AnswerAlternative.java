@@ -1,6 +1,4 @@
-package Panels;
-
-import java.io.Serializable;
+package panels;
 
 public class AnswerAlternative {
 
