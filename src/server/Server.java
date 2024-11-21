@@ -12,7 +12,7 @@ public class Server implements Runnable {
     public static final int PORT = 55555;
     public static final int MAX_CLIENTS = 2;
 
-    private int clientCount = 0;
+    protected static int clientCount = 0;
 
     Socket[] clientSockets = new Socket[MAX_CLIENTS];
     ServerProtocol[] serverProtocols = new ServerProtocol[MAX_CLIENTS];
@@ -32,15 +32,6 @@ public class Server implements Runnable {
 
                 in[clientIndex] = new ObjectInputStream(clientSocket.getInputStream());
                 out[clientIndex] = new ObjectOutputStream(clientSocket.getOutputStream());
-
-                out[clientIndex].writeObject(new Intro());
-                 try {
-                     if (in[clientIndex].readObject() instanceof Connected) {
-                         System.out.println("Connection OK for client " + (clientIndex + 1));
-                     }
-                 } catch (ClassNotFoundException e) {
-                     System.err.println("ClassNotFoundException: " + e.getMessage());
-                 }
 
                  ServerProtocol protocol = new ServerProtocol(clientSocket);
                 serverProtocols[clientIndex] = protocol;
