@@ -2,6 +2,7 @@ package client;
 
 import pojos.Intro;
 import pojos.Question;
+import pojos.Waiting;
 import server.GameState;
 
 import java.io.IOException;
@@ -35,11 +36,15 @@ public class Client {
                 } else if (fromServer instanceof List<?>) {
                     List<?> receivedList = (List<?>) fromServer;
                     if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question q) {
-                        System.out.println(q);
+                        System.out.println(q.getCorrectAnswer());
                         oos.writeObject(q.getCorrectAnswer());
+
                     }
                 } else if (fromServer instanceof GameState gameState) {
                     System.out.println(gameState.getPlayerScores());
+                    oos.writeObject(fromServer);
+                } else if (fromServer instanceof Waiting) {
+                    oos.writeObject(fromServer);
                 }
             }
         } catch (ClassNotFoundException e) {
