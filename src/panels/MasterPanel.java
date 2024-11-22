@@ -3,7 +3,7 @@ package panels;
 import javax.swing.*;
 import java.awt.*;
 
-abstract public class MasterPanel extends JPanel implements IPanel{
+abstract public class MasterPanel extends JPanel {
 
     protected JLabel logoLabel = new JLabel("QuizKampen");
     protected Color logoColor = new Color(118, 0, 150);
@@ -23,7 +23,6 @@ abstract public class MasterPanel extends JPanel implements IPanel{
         setBackground(backgroundColor);
     }
 
-    @Override
     public void setCustomColor(Color backgroundColor, Color logoColor, Color infoTextColor, Color nuance) {
         this.backgroundColor = backgroundColor;
         this.logoColor = logoColor;
@@ -43,7 +42,4 @@ abstract public class MasterPanel extends JPanel implements IPanel{
         this.logoFont = font;
         logoLabel.setFont(font);
     }
-
-    @Override
-    public abstract void setPanel();
 }

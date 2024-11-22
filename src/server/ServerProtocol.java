@@ -16,7 +16,7 @@ public class ServerProtocol implements Runnable {
     private static final int SHOW_RESULTS = 3;
     private static final int ANSWER_QUESTION = 4;
 
-    private int state = WAITING;
+    private int state = CHOOSE_CATEGORY;
     private Categories categories = new Categories();
     private List<Question> currentQuestions = new ArrayList<>(2);
 

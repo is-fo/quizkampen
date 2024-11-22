@@ -29,7 +29,7 @@ public class GameLogic implements Runnable {
     public void run() {
         Properties p = new Properties();
         try {
-            p.load(new FileInputStream("src/PropertiesDemo/DemoProperties.properties"));
+            p.load(new FileInputStream("src/server/Settings.properties"));
         }
         catch (Exception e){
             e.printStackTrace();
@@ -68,9 +68,10 @@ public class GameLogic implements Runnable {
                 e.printStackTrace();
                 System.err.println("Error reading from client: " + e.getMessage());
                 clientCount--;
+                currentClient = (currentClient + 1) % MAX_CLIENTS;
                 System.out.println("Client disconnected, new total: " + clientCount);
-                break;
             }
+            System.out.println("Run ended in GameLogic");
         }
     }
 }

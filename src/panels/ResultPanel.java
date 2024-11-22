@@ -63,20 +63,22 @@ public class ResultPanel extends JPanel {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-        JFrame frame = new JFrame("QuizKampen Resultat");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            JFrame frame = new JFrame("QuizKampen Resultat");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        int roundsPerGame = 6;
-        ResultPanel resultPanel = new ResultPanel("Spelare 1", "Spelare 2");
+            int roundsPerGame = 6;
+            ResultPanel resultPanel = new ResultPanel("Spelare 1", "Spelare 2", 6);
 
-        frame.add(resultPanel);
-        frame.setSize(800, 600);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        // Exempel på att uppdatera resultat
-        resultPanel.updateRound(1, 10, 5, "Geografi");
-        resultPanel.updateRound(2, 20, 15, "Historia");
+            frame.add(resultPanel);
+            frame.setSize(800, 600);
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+            // Exempel på att uppdatera resultat
+            resultPanel.updateRound(1, 10, 5, "Geografi");
+            resultPanel.updateRound(2, 20, 15, "Historia");
 
+
+        });
     }
 }
 
