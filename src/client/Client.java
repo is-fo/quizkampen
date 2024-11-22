@@ -1,11 +1,13 @@
 package client;
 
 import pojos.Intro;
+import pojos.Question;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 
 
 public class Client {
@@ -27,7 +29,14 @@ public class Client {
                 if (fromServer instanceof Intro) {
                     oos.writeObject(fromServer);
                 } else if (fromServer instanceof String) { //TODO fromserver List<String> categories
-
+                    System.out.println(fromServer + "<- category received");
+                    oos.writeObject("Sport");
+                } else if (fromServer instanceof List<?>) {
+                    List<?> receivedList = (List<?>) fromServer;
+                    if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question q) {
+                        System.out.println(q);
+                        oos.writeObject(q.getCorrectAnswer());
+                    }
                 }
             }
         } catch (ClassNotFoundException e) {
