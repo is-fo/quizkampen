@@ -22,8 +22,8 @@ public class GameState implements Serializable {
         }
     }
 
-    public void updatePlayerScores(int currentRound, int score) {
-        playerScores.get(currentRound).setScores(currentRound, score);
+    public void updatePlayerScores(int currentRound, int score, int player) {
+        playerScores.get(player).setScores(currentRound, score);
     }
 
     public void incrementRound() {
