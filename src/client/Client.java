@@ -2,6 +2,7 @@ package client;
 
 import pojos.Intro;
 import pojos.Question;
+import server.GameState;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -37,6 +38,8 @@ public class Client {
                         System.out.println(q);
                         oos.writeObject(q.getCorrectAnswer());
                     }
+                } else if (fromServer instanceof GameState gameState) {
+                    System.out.println(gameState.getPlayerScores());
                 }
             }
         } catch (ClassNotFoundException e) {

@@ -42,7 +42,7 @@ public class ServerProtocol implements Runnable {
                 state = ANSWER_QUESTION;
             }
         } else if (state == CHOOSE_CATEGORY) {
-            output = categories.getCategory(categories.getCategoryInt("Sport")); //todo random kategorier
+            output = categories.getCategoryString(categories.getCategoryInt("Sport")); //TODO List<String> category random
             state = CATEGORY_CHOSEN;
         } else if (state == CATEGORY_CHOSEN) {
             currentCategory = categories.getCategoryInt((String)input);
@@ -53,10 +53,6 @@ public class ServerProtocol implements Runnable {
             gameState.incrementRound();
             state = PLAY_ROUND;
         } else if (state == PLAY_ROUND) {
-            currentQuestions = categories.getNQuestions(2, currentCategory);
-            output = currentQuestions;
-            state = SHOW_RESULTS;
-        } else if (state == SHOW_RESULTS) {
             List<?> answersCurrentCategory = (List<?>) input;
             for (int i = 0 ; i < answersCurrentCategory.size(); i++) {
                 if (answersCurrentCategory.equals(categories.getNQuestions(2, currentCategory).get(i).getCorrectAnswer())){
@@ -65,6 +61,9 @@ public class ServerProtocol implements Runnable {
             }
             gameState.updatePlayerScores(currentCategory, scoreCurrentRound, player);
             output = gameState.getResults();
+            state = SHOW_RESULTS;
+        } else if (state == SHOW_RESULTS) {
+            output = new Waiting();
             state = WAITING;
         } else if (state == ANSWER_QUESTION) {
             output = currentQuestions;
