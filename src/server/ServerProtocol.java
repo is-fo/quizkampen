@@ -5,6 +5,7 @@ import pojos.Waiting;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ServerProtocol implements Runnable {
@@ -19,6 +20,7 @@ public class ServerProtocol implements Runnable {
     private int state = CHOOSE_CATEGORY;
     private Categories categories = new Categories();
     private List<Question> currentQuestions = new ArrayList<>(2);
+    List<String> categoriesString = new ArrayList<>(Arrays.asList(categories.getCategoryString(categories.SPORT), categories.getCategoryString(categories.GEOGRAPHY)));
 
     private Socket socket;
 
@@ -30,6 +32,7 @@ public class ServerProtocol implements Runnable {
     public Object processInput(Object input, int player, GameState gameState) {
         Object output = null;
         int currentCategory = -1;
+        int scoreCurrentRound = 0;
         
         if (state == WAITING) {
             output = new Waiting();
@@ -39,8 +42,7 @@ public class ServerProtocol implements Runnable {
                 state = ANSWER_QUESTION;
             }
         } else if (state == CHOOSE_CATEGORY) {
-            //TODO skicka flera kategorier
-            output = categories.getCategoryString(0);
+            output = categoriesString;
             state = CATEGORY_CHOSEN;
         } else if (state == CATEGORY_CHOSEN) {
             currentCategory = categories.getCategoryInt((String)input);
@@ -55,9 +57,13 @@ public class ServerProtocol implements Runnable {
             output = currentQuestions;
             state = SHOW_RESULTS;
         } else if (state == SHOW_RESULTS) {
-            //TODO vilka frågor man hade rätt på
-            gameState.updatePlayerScores(player, (Integer) input);
-
+            List<?> answersCurrentCategory = (List<?>) input;
+            for (int i = 0 ; i < answersCurrentCategory.size(); i++) {
+                if (answersCurrentCategory.equals(categories.getNQuestions(2, currentCategory).get(i).getCorrectAnswer())){
+                    scoreCurrentRound++;
+                }
+            }
+            gameState.updatePlayerScores(currentCategory, scoreCurrentRound, player);
             output = gameState.getResults();
             state = WAITING;
         } else if (state == ANSWER_QUESTION) {
