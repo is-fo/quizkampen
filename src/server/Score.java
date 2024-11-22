@@ -11,8 +11,8 @@ public class Score {
         return scores;
     }
 
-    public void setScores(int player, int score) {
-        scores.add(player, score);
+    public void setScores(int score) {
+        scores.add(score);
     }
     public int getPlayerScore(int player) {
         return scores.get(player);
@@ -20,8 +20,6 @@ public class Score {
     public int getScoreForRound(int round) {
         return scores.get(round);
     }
-    public void setScoreForRound(int round, int scoreThisRound) {
-        scores.set(round, scoreThisRound);
-    }
+
 
 }

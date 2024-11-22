@@ -63,7 +63,7 @@ public class ServerProtocol implements Runnable {
                     scoreCurrentRound++;
                 }
             }
-            gameState.updatePlayerScores(currentCategory, scoreCurrentRound, player);
+            gameState.updatePlayerScores(scoreCurrentRound, player);
             output = gameState.getResults();
             state = WAITING;
         } else if (state == ANSWER_QUESTION) {

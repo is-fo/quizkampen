@@ -22,8 +22,8 @@ public class GameState implements Serializable {
         }
     }
 
-    public void updatePlayerScores(int currentRound, int score, int player) {
-        playerScores.get(player).setScores(currentRound, score);
+    public void updatePlayerScores(int score, int player) {
+        playerScores.get(player).setScores(score);
     }
 
     public void incrementRound() {
@@ -34,8 +34,8 @@ public class GameState implements Serializable {
         this.category = category;
     }
 
-    public Integer getScore(int player) {
-        return playerScores.get(player).getScoreForRound(currentRound);
+    public Integer getScore(int player, int round) {
+        return playerScores.get(player).getScoreForRound(round);
     }
 
     public GameState getResults() {
