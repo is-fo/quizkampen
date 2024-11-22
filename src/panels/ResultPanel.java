@@ -2,13 +2,19 @@ package panels;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
 
-public class ResultPanel extends JPanel {
+
+
+public class ResultPanel extends JPanel  {
     private JLabel[] player1Scores;
     private JLabel[] categories;
     private JLabel[] player2Scores;
     private JButton playAgainButton;
+    private JButton geUppButton;
+    private JPanel buttonPanel = new JPanel();
 
     public ResultPanel(String player1Name, String player2Name) {
         setLayout(new BorderLayout());
@@ -32,20 +38,36 @@ public class ResultPanel extends JPanel {
             resultPanel.add(player2Scores[i]);
         }
 
-        playAgainButton = new JButton("Spela igen");
-        playAgainButton.addActionListener(e -> reset());
-        add(resultPanel, BorderLayout.CENTER);
-        add(playAgainButton, BorderLayout.SOUTH);
+        geUppButton = new JButton("   Ge upp       ");
+        geUppButton.addActionListener(e -> {
+            // Skicka 'give_up' till servern
+            sendGiveUpToServer();
 
-    }
-    public void updateRound(int round, int player1Score, int player2Score, String category) {
-        if (round < 1 || round > 6) {
-            throw new IllegalArgumentException("Omgången måste vara mellan 1 och 6.");
+            // Stäng anslutningen till servern (antag att du har en socket anslutning)
+            closeConnection();
+
+            // Skapa och hantera "Spela igen"-knappen
+            playAgainButton = new JButton("    Spela igen   ");
+            playAgainButton.addActionListener(e1 -> reset());
+
+            // Lägg till knapparna i panelen
+            add(resultPanel, BorderLayout.CENTER);
+            buttonPanel.add(geUppButton);
+            buttonPanel.add(playAgainButton);
+            add(buttonPanel, BorderLayout.SOUTH);
+
+            // Inaktivera Ge upp-knappen så att den inte kan klickas igen
+            geUppButton.setEnabled(false);
+        });}
+
+    public void updateRound(int round, int player1Score, int player2Score, String category){
+            if (round < 1 || round > 6) {
+                throw new IllegalArgumentException("Omgången måste vara mellan 1 och 6.");
+            }
+            player1Scores[round - 1].setText(String.valueOf(player1Score));
+            player2Scores[round - 1].setText(String.valueOf(player2Score));
+            categories[round - 1].setText(category);
         }
-        player1Scores[round - 1].setText(String.valueOf(player1Score));
-        player2Scores[round - 1].setText(String.valueOf(player2Score));
-        categories[round - 1].setText(category);
-    }
 
     public void reset() {
         for (int i = 0; i < 6; i++) {
@@ -54,6 +76,30 @@ public class ResultPanel extends JPanel {
             player2Scores[i].setText("");
         }
     }
+        private void sendGiveUpToServer() {
+            try {
+
+                out.writeObject("ge upp");
+                out.flush();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                System.out.println("Error sending give-up message");
+            }
+        }
+        private void closeConnection() {
+            try {
+                if (oos != null) {
+                    oos.close();  // Stänger output stream
+                }
+                if (addressSocket != null) {
+                    socket.close();  // Stänger socket-anslutningen
+                }
+                System.out.println("Anslutningen till servern stängdes.");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                System.out.println("Error while closing connection: " + ex.getMessage());
+            }
+        }
 
     public JButton getPlayAgainButton() {
         return playAgainButton;
