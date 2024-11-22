@@ -4,8 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
-
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 
 
 public class ResultPanel extends JPanel  {
@@ -15,6 +15,9 @@ public class ResultPanel extends JPanel  {
     private JButton playAgainButton;
     private JButton geUppButton;
     private JPanel buttonPanel = new JPanel();
+    private ObjectOutputStream out;
+    private Socket addressSocket;
+    //GiveUp gg = new GiveUp();
 
     public ResultPanel(String player1Name, String player2Name) {
         setLayout(new BorderLayout());
@@ -38,27 +41,25 @@ public class ResultPanel extends JPanel  {
             resultPanel.add(player2Scores[i]);
         }
 
-        geUppButton = new JButton("   Ge upp       ");
+        geUppButton = new JButton("   Ge upp ");
+        playAgainButton = new JButton("    Spela igen");
         geUppButton.addActionListener(e -> {
-            // Skicka 'give_up' till servern
-            sendGiveUpToServer();
-
-            // Stäng anslutningen till servern (antag att du har en socket anslutning)
-            closeConnection();
-
-            // Skapa och hantera "Spela igen"-knappen
-            playAgainButton = new JButton("    Spela igen   ");
-            playAgainButton.addActionListener(e1 -> reset());
-
-            // Lägg till knapparna i panelen
-            add(resultPanel, BorderLayout.CENTER);
-            buttonPanel.add(geUppButton);
-            buttonPanel.add(playAgainButton);
-            add(buttonPanel, BorderLayout.SOUTH);
-
-            // Inaktivera Ge upp-knappen så att den inte kan klickas igen
+            GiveUp gg = new GiveUp();
+            gg.sendGiveUpToServer();
+            gg.closeConnection();
             geUppButton.setEnabled(false);
-        });}
+        });// Inaktivera Ge upp-knappen så att den inte kan klickas igen
+
+
+        playAgainButton.addActionListener(e1 -> reset());
+        add(resultPanel, BorderLayout.CENTER);
+        buttonPanel.add(geUppButton);
+        buttonPanel.add(playAgainButton);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        // Inaktivera Ge upp-knappen så att den inte kan klickas igen
+
+    }
 
     public void updateRound(int round, int player1Score, int player2Score, String category){
             if (round < 1 || round > 6) {
@@ -76,7 +77,8 @@ public class ResultPanel extends JPanel  {
             player2Scores[i].setText("");
         }
     }
-        private void sendGiveUpToServer() {
+      /*  private void sendGiveUpToServer() {
+
             try {
 
                 out.writeObject("ge upp");
@@ -88,18 +90,18 @@ public class ResultPanel extends JPanel  {
         }
         private void closeConnection() {
             try {
-                if (oos != null) {
-                    oos.close();  // Stänger output stream
+                if (out != null) {
+                    out.close();  // Stänger output stream
                 }
                 if (addressSocket != null) {
-                    socket.close();  // Stänger socket-anslutningen
+                    addressSocket.close();  // Stänger socket-anslutningen
                 }
                 System.out.println("Anslutningen till servern stängdes.");
             } catch (IOException ex) {
                 ex.printStackTrace();
                 System.out.println("Error while closing connection: " + ex.getMessage());
             }
-        }
+        }*/
 
     public JButton getPlayAgainButton() {
         return playAgainButton;
