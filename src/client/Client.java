@@ -28,6 +28,7 @@ public class Client {
                 System.out.println("hej");
 
                 if (fromServer instanceof Intro) {
+                    //TODO: skapa X antal labels i Resultatpaneler beroende på antal roundsPerGame från intro Object
                     System.out.println("Anslutning upprättad ");
                     oos.writeObject(new Connected());
                     oos.writeObject(fromServer);
