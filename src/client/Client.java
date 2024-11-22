@@ -6,6 +6,7 @@ import pojos.Question;
 import pojos.Waiting;
 import server.GameState;
 import pojos.Intro;
+import panels.GamePanel;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -65,6 +66,16 @@ public class Client {
                         //TODO logik för att välja kategori
                         //lär iterera över listan man får in, skapa en knapp för varje
                         //skicka till servern en String med texten på tryckt knapp
+                        List<String> categories = (List<String>) receivedList;
+                        GamePanel gamePanel;
+                        SwingUtilities.invokeLater(() -> gamePanel.showCategorySelection(categories, selectedCategory -> {
+                            try {
+                                oos.writeObject(selectedCategory);
+                                oos.flush();
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+                        }));
                     }
                 } else if (fromServer instanceof GameState) {
                     System.out.println("Spelstatus");

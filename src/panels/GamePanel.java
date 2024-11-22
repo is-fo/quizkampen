@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class GamePanel extends MasterPanel {
     private final CardLayout cardLayout = new CardLayout();
@@ -79,6 +80,25 @@ public class GamePanel extends MasterPanel {
         cardLayout.show(mainPanel, "QuestionPanel");
     }
 
+    public void showCategorySelection(List<String> categories, Consumer<String> categorySelected) {
+        JFrame frame = new JFrame("Välj kategori");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(new GridLayout(categories.size(), 1, 10, 10));
+
+        for (String category : categories) {
+            JButton button = new JButton(category);
+            button.addActionListener(e -> {
+                categorySelected.accept(category);
+                frame.dispose();
+            });
+            frame.add(button);
+        }
+
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+
 
 
     public static void main(String[] args) {
@@ -92,6 +112,12 @@ public class GamePanel extends MasterPanel {
         });
     }
 }
+
+
+
+
+
+
 
 
 
