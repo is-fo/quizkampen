@@ -1,11 +1,13 @@
 package client;
 
+import panels.ResultPanel;
+import pojos.Connected;
 import pojos.Question;
 import pojos.Waiting;
 import server.GameState;
-import pojos.Connected;
 import pojos.Intro;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -29,9 +31,25 @@ public class Client {
 
                 if (fromServer instanceof Intro) {
                     //TODO: skapa X antal labels i Resultatpaneler beroende på antal roundsPerGame från intro Object
-                    System.out.println("Anslutning upprättad ");
+                    Intro intro = (Intro) fromServer;
+                    int roundsPerGame = intro.getRoundsPerGame();
+                    System.out.println("Antal rundor per spel: " + roundsPerGame);
+
+                    SwingUtilities.invokeLater(() -> {
+                        ResultPanel resultPanel = new ResultPanel("Spelare 1", "Spelare 2", roundsPerGame);
+                        JFrame frame = new JFrame("Resultat");
+                        frame.add(resultPanel);
+                        frame.setSize(800, 600);
+                        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        frame.setVisible(true);
+                    });
+
                     oos.writeObject(new Connected());
                     oos.writeObject(fromServer);
+
+                    //System.out.println("Anslutning upprättad ");
+                    //oos.writeObject(new Connected());
+                    //oos.writeObject(fromServer);
                 } else if (fromServer instanceof Waiting) {
                     System.out.println("Tjena");
                     oos.writeObject(fromServer);
