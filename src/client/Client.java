@@ -53,9 +53,10 @@ public class Client {
                 }
             }
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
             System.err.println("Error reading object from server: " + e.getMessage());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
