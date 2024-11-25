@@ -21,7 +21,7 @@ public class ServerProtocol implements Runnable {
     private int state = CHOOSE_CATEGORY;
     private Categories categories = new Categories();
     private List<Question> currentQuestions = new ArrayList<>(2);
-//    List<String> categoriesString = new ArrayList<>(Arrays.asList(categories.getCategoryString(categories.SPORT), categories.getCategoryString(categories.GEOGRAPHY)));
+    List<String> categoriesString = new ArrayList<>(Arrays.asList(categories.getCategoryString(categories.SPORT), categories.getCategoryString(categories.GEOGRAPHY)));
 
     private Socket socket;
 
@@ -34,6 +34,7 @@ public class ServerProtocol implements Runnable {
         Object output = null;
         int currentCategory = -1;
         int scoreCurrentRound = 0;
+
         
         if (state == WAITING) {
             output = currentQuestions;
@@ -44,7 +45,8 @@ public class ServerProtocol implements Runnable {
                 state = ANSWER_QUESTION;
             }
         } else if (state == CHOOSE_CATEGORY) {
-            output = categories.getCategoryString(categories.getCategoryInt("Sport")); //TODO List<String> category random
+
+            output = categoriesString;
             state = CATEGORY_CHOSEN;
         } else if (state == CATEGORY_CHOSEN) {
             currentCategory = categories.getCategoryInt((String)input);
