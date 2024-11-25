@@ -77,7 +77,6 @@ public class GameLogic implements Runnable {
                 System.out.println("Clients disconnected, new total: " + clientCount);
                 break;
             }
-            System.out.println("Run ended in GameLogic");
         }
     }
 }
