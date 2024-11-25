@@ -35,7 +35,8 @@ public class ServerProtocol implements Runnable {
         int scoreCurrentRound = 0;
         
         if (state == WAITING) {
-            output = new Waiting();
+            output = currentQuestions;
+            System.out.println(gameState.getCurrentRound());
             if (player == 0 && gameState.getCurrentRound() == 0) {
                 state = CHOOSE_CATEGORY;
             } else {
@@ -46,6 +47,7 @@ public class ServerProtocol implements Runnable {
             state = CATEGORY_CHOSEN;
         } else if (state == CATEGORY_CHOSEN) {
             currentCategory = categories.getCategoryInt((String)input);
+            currentQuestions = categories.getNQuestions(1, currentCategory);
             output = categories.getCategory(currentCategory);
             if (output != null) {
                 categories.setCurrentCategory((List<Question>) output);
@@ -53,27 +55,13 @@ public class ServerProtocol implements Runnable {
             gameState.incrementRound();
             state = PLAY_ROUND;
         } else if (state == PLAY_ROUND) {
-            List<?> answersCurrentCategory = (List<?>) input;
-            for (int i = 0 ; i < answersCurrentCategory.size(); i++) {
-                if (answersCurrentCategory.equals(categories.getNQuestions(2, currentCategory).get(i).getCorrectAnswer())){
-                    scoreCurrentRound++;
-                }
-            }
-            gameState.updatePlayerScores(currentCategory, scoreCurrentRound, player);
-            output = gameState.getResults();
+            output = gameState;
             state = SHOW_RESULTS;
         } else if (state == SHOW_RESULTS) {
             output = new Waiting();
             state = WAITING;
         } else if (state == ANSWER_QUESTION) {
             output = currentQuestions;
-            
-//            if (player == 0 && gameState.getCurrentRound() % 2 == 0) {
-//                gameState.incrementRound();
-//            } else if (player == 1 && gameState.getCurrentRound() % 2 == 1) {
-//                gameState.incrementRound();
-//            }
-
             state = CHOOSE_CATEGORY;
         }
 
@@ -86,3 +74,20 @@ public class ServerProtocol implements Runnable {
     }
 
 }
+
+/*
+            List<?> answersCurrentCategory = (List<?>) input;
+            for (int i = 0 ; i < answersCurrentCategory.size(); i++) {
+                if (answersCurrentCategory.equals(categories.getNQuestions(2, currentCategory).get(i).getCorrectAnswer())){
+                    scoreCurrentRound++;
+                }
+            }
+            gameState.updatePlayerScores(currentRound, scoreCurrentRound, player);
+            output = gameState.getResults();
+
+             */
+//            if (player == 0 && gameState.getCurrentRound() % 2 == 0) {
+//                gameState.incrementRound();
+//            } else if (player == 1 && gameState.getCurrentRound() % 2 == 1) {
+//                gameState.incrementRound();
+//            }
