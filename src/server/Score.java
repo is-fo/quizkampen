@@ -1,9 +1,10 @@
 package server;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Score {
+public class Score implements Serializable {
     List<Integer> scores = new ArrayList<>();
 
 

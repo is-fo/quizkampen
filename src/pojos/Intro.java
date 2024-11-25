@@ -11,4 +11,8 @@ public class Intro implements Serializable {
         this.questionsPerRound = questionsPerRound;
         this.roundsPerGame = roundsPerGame;
     }
+
+    public int getRoundsPerGame() {
+        return roundsPerGame;
+    }
 }

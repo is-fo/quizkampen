@@ -2,10 +2,7 @@ package server;
 
 import pojos.Intro;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.Properties;
 
@@ -29,7 +26,7 @@ public class GameLogic implements Runnable {
     public void run() {
         Properties p = new Properties();
         try {
-            p.load(new FileInputStream("src/PropertiesDemo/DemoProperties.properties"));
+            p.load(new FileInputStream("src/server/Settings.properties"));
         }
         catch (Exception e){
             e.printStackTrace();
@@ -62,13 +59,22 @@ public class GameLogic implements Runnable {
                         currentClient = (currentClient + 1) % MAX_CLIENTS; //nextClient()
                     }
                 }
+
             } catch (ClassNotFoundException e) {
                 System.err.println("Error reading object: " + e.getMessage());
             } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("Error reading from client: " + e.getMessage());
-                clientCount--;
-                System.out.println("Client disconnected, new total: " + clientCount);
+                System.err.println("Error reading from client, closing connections." + e.getMessage());
+                for (int i = 0; i < MAX_CLIENTS; i++) {
+                    try {
+                        clientSockets[i].close();
+                        in[i].close();
+                        out[i].close();
+                        clientCount--;
+                    } catch (IOException ex) {
+                        System.err.println("Error closing socket connections: " + ex.getMessage());
+                    }
+                }
+                System.out.println("Clients disconnected, new total: " + clientCount);
                 break;
             }
         }

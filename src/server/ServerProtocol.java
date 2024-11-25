@@ -1,10 +1,12 @@
 package server;
 
+import pojos.EndGame;
 import pojos.Question;
 import pojos.Waiting;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ServerProtocol implements Runnable {
@@ -16,9 +18,10 @@ public class ServerProtocol implements Runnable {
     private static final int SHOW_RESULTS = 3;
     private static final int ANSWER_QUESTION = 4;
 
-    private int state = WAITING;
+    private int state = CHOOSE_CATEGORY;
     private Categories categories = new Categories();
     private List<Question> currentQuestions = new ArrayList<>(2);
+//    List<String> categoriesString = new ArrayList<>(Arrays.asList(categories.getCategoryString(categories.SPORT), categories.getCategoryString(categories.GEOGRAPHY)));
 
     private Socket socket;
 
@@ -30,20 +33,23 @@ public class ServerProtocol implements Runnable {
     public Object processInput(Object input, int player, GameState gameState) {
         Object output = null;
         int currentCategory = -1;
+        int scoreCurrentRound = 0;
         
         if (state == WAITING) {
-            output = new Waiting();
+            output = currentQuestions;
+            System.out.println(gameState.getCurrentRound());
             if (player == 0 && gameState.getCurrentRound() == 0) {
                 state = CHOOSE_CATEGORY;
             } else {
                 state = ANSWER_QUESTION;
             }
         } else if (state == CHOOSE_CATEGORY) {
-            //TODO skicka flera kategorier
-            output = categories.getCategoryString(0);
+            output = categories.getCategoryString(categories.getCategoryInt("Sport")); //TODO List<String> category random
             state = CATEGORY_CHOSEN;
         } else if (state == CATEGORY_CHOSEN) {
             currentCategory = categories.getCategoryInt((String)input);
+
+            currentQuestions = categories.getTempQuestion(); //TODO skicka random frågor
             output = categories.getCategory(currentCategory);
             if (output != null) {
                 categories.setCurrentCategory((List<Question>) output);
@@ -51,24 +57,16 @@ public class ServerProtocol implements Runnable {
             gameState.incrementRound();
             state = PLAY_ROUND;
         } else if (state == PLAY_ROUND) {
-            currentQuestions = categories.getNQuestions(2, currentCategory);
-            output = currentQuestions;
+            output = gameState;
             state = SHOW_RESULTS;
         } else if (state == SHOW_RESULTS) {
-            //TODO vilka frågor man hade rätt på
-            gameState.updatePlayerScores(player, (Integer) input);
-
-            output = gameState.getResults();
+            if (gameState.getCurrentRound() > 6) {
+                return new EndGame();
+            }
+            output = new Waiting();
             state = WAITING;
         } else if (state == ANSWER_QUESTION) {
             output = currentQuestions;
-            
-//            if (player == 0 && gameState.getCurrentRound() % 2 == 0) {
-//                gameState.incrementRound();
-//            } else if (player == 1 && gameState.getCurrentRound() % 2 == 1) {
-//                gameState.incrementRound();
-//            }
-
             state = CHOOSE_CATEGORY;
         }
 
@@ -81,3 +79,20 @@ public class ServerProtocol implements Runnable {
     }
 
 }
+
+/*
+            List<?> answersCurrentCategory = (List<?>) input;
+            for (int i = 0 ; i < answersCurrentCategory.size(); i++) {
+                if (answersCurrentCategory.equals(categories.getNQuestions(2, currentCategory).get(i).getCorrectAnswer())){
+                    scoreCurrentRound++;
+                }
+            }
+            gameState.updatePlayerScores(currentRound, scoreCurrentRound, player);
+            output = gameState.getResults();
+
+             */
+//            if (player == 0 && gameState.getCurrentRound() % 2 == 0) {
+//                gameState.incrementRound();
+//            } else if (player == 1 && gameState.getCurrentRound() % 2 == 1) {
+//                gameState.incrementRound();
+//            }

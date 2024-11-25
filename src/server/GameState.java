@@ -3,7 +3,7 @@ package server;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+
 
 import static server.Categories.*;
 
@@ -20,7 +20,18 @@ public class GameState implements Serializable {
         for (int i = 0; i < 2; i++) {
             playerScores.add(new Score());
         }
+    }
 
+    public void updatePlayerScores(int score, int player) {
+        playerScores.get(player).setScores(currentRound, score);
+    }
+
+    public void incrementRound() {
+        currentRound++;
+    }
+
+    public void setCategory(int category) {
+        this.category = category;
     }
 
     public Integer getScore(int player) {
@@ -31,16 +42,15 @@ public class GameState implements Serializable {
         return this;
     }
 
-    public void updatePlayerScores(int player, int score) {
-        playerScores.get(player).setScores(player, score);
-    }
-
-
-    public void incrementRound() {
-        currentRound++;
-    }
-
     public int getCurrentRound() {
         return currentRound;
+    }
+
+    public List<Score> getPlayerScores() {
+        return playerScores;
+    }
+
+    public int getCategory() {
+        return category;
     }
 }

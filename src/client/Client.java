@@ -1,10 +1,10 @@
 package client;
 
+import pojos.EndGame;
+import pojos.Intro;
 import pojos.Question;
 import pojos.Waiting;
 import server.GameState;
-import pojos.Connected;
-import pojos.Intro;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,7 +12,10 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
 
+
 public class Client {
+
+    private int roundsPerGame;
 
     Client() {
         String hostName = "localhost";
@@ -25,31 +28,29 @@ public class Client {
         ) {
             while (true) {
                 Object fromServer = ois.readObject();
-                System.out.println("hej");
 
                 if (fromServer instanceof Intro) {
-                    //TODO: skapa X antal labels i Resultatpaneler beroende på antal roundsPerGame från intro Object
-                    System.out.println("Anslutning upprättad ");
-                    oos.writeObject(new Connected());
                     oos.writeObject(fromServer);
-                } else if (fromServer instanceof Waiting) {
-                    System.out.println("Tjena");
-                    oos.writeObject(fromServer);
+                } else if (fromServer instanceof String) { //TODO fromserver List<String> categories
+                    System.out.println(fromServer + "<- category received");
+                    oos.writeObject("Sport");
                 } else if (fromServer instanceof List<?>) {
                     List<?> receivedList = (List<?>) fromServer;
-                    if (!receivedList.isEmpty() && receivedList.get(0) instanceof Question) {
-                        List<Question> questions = (List<Question>) receivedList;
-                        System.out.println("Han är lugn");
-                        for (Question q : questions) {
-                            System.out.println(q.getQuestion());
-                        }
-                    } else if (!receivedList.isEmpty() && receivedList.get(0) instanceof String) {
-                        //TODO logik för att välja kategori
-                        //lär iterera över listan man får in, skapa en knapp för varje
-                        //skicka till servern en String med texten på tryckt knapp
+                    if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question q) {
+                        System.out.println(q.getCorrectAnswer());
+                        oos.writeObject(q.getCorrectAnswer());
+
                     }
-                } else if (fromServer instanceof GameState) {
-                    System.out.println("Spelstatus");
+                } else if (fromServer instanceof GameState gameState) {
+                    System.out.println(gameState.getPlayerScores());
+                    oos.writeObject(fromServer);
+                } else if (fromServer instanceof Waiting) {
+                    oos.writeObject(fromServer);
+                } else if (fromServer instanceof EndGame) {
+                    oos.close();
+                    ois.close();
+                    addressSocket.close();
+                    break;
                 }
             }
         } catch (ClassNotFoundException e) {
@@ -59,6 +60,7 @@ public class Client {
             e.printStackTrace();
         }
     }
+
 
     public static void main(String[] args) {
         new Client();
