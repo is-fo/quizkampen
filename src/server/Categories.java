@@ -43,6 +43,22 @@ public class Categories implements Serializable {
         allQuestions.add(geographyQuestions);
     }
 
+    public List<Question> getTempQuestion() {
+        List<String> answersSport1 = Arrays.asList("Frankrike", "Sverige");
+
+        Question q1 = new Question("Vilket lag vann VM 2018??", answersSport1, "Frankrike");
+        List<Question> r = Arrays.asList(q1);
+        return r;
+    }
+
+    public List<Question> getTempQuestion2() {
+        List<String> answersSport1 = Arrays.asList("anFDasnd", "safd,sfdnl");
+
+        Question q1 = new Question("sdafnlsafdlksfadl", answersSport1, ",jn,nj");
+        List<Question> r = Arrays.asList(q1);
+        return r;
+    }
+
     public List<Question> getCategory(int category) {
         return allQuestions.get(category);
     }
