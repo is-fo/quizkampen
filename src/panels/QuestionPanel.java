@@ -26,32 +26,33 @@ public class QuestionPanel {
 
     public void drawQuestion() {
         //TODO en label med frågar
-        question.getQuestion();
         JLabel questionLabel = new JLabel(question.getQuestion());
+        questionLabel.setFont(new Font("Arial", Font.BOLD, 16));
         questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(questionLabel);
 
-        List<String> answers = question.getAnswers();
-        for (String ans : answers) { //TODO svarsalternativ -> returnera en String
-            JButton answerButton = new JButton(ans);
+        //TODO svarsalternativ -> returnera en String
+        for (String answer : question.getAnswers()) {
+            JButton answerButton = new JButton(answer);
             answerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-            answerButton.addActionListener(e -> {
-                String selectedAnswer = ((JButton) e.getSource()).getText();
-                if (selectedAnswer.equals(question.getCorrectAnswer())) {
-                    JOptionPane.showMessageDialog(panel, "Rätt svar!");
-                } else {
-                    JOptionPane.showMessageDialog(panel, "Fel svar. Rätt svar är: " + question.getCorrectAnswer());
-                }
-                try {
-                    oos.writeObject(selectedAnswer);
-                    oos.flush();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(panel, "Fel vid kommunikation med servern.");
-                }
-            });
+            answerButton.addActionListener(e -> handleAnswerSelection(answer));
+            panel.add(Box.createRigidArea(new Dimension(0, 5)));
             panel.add(answerButton);
+        }
+    }
+
+    private void handleAnswerSelection(String selectedAnswer) {
+        String message = selectedAnswer.equals(question.getCorrectAnswer())
+                ? "Rätt svar!" : "Fel svar. Rätt svar är: " + question.getCorrectAnswer();
+        JOptionPane.showMessageDialog(panel, message);
+
+        try {
+            oos.writeObject(selectedAnswer);
+            oos.flush();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(panel, "Fel vid kommunikation med servern.");
         }
     }
 
@@ -60,23 +61,24 @@ public class QuestionPanel {
     }
 
     public static void main(String[] args) {
-        List<String> answeres = new ArrayList<String>();
-        answeres.add("Blå");
-        answeres.add("Gul");
-        answeres.add("Vit");
-        answeres.add("Svart");
-        Question q = new Question("Vilken färg har himlen?", answeres, "Blå");
+        List<String> answers = List.of("Blå", "Gul", "Vit", "Svart");
+        Question question = new Question("Vilken färg har himlen?", answers, "Blå");
+
         try {
-            Socket socket = new Socket("localhost", 5000);
+            Socket socket = new Socket("localhost", 55555);
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            QuestionPanel qp = new QuestionPanel(q, oos);
-            qp.drawQuestion();
+
+            QuestionPanel questionPanel = new QuestionPanel(question, oos);
+            questionPanel.drawQuestion();
+
             JFrame frame = new JFrame("QuizKampen");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(400, 300);
             frame.setLayout(new BorderLayout());
-            frame.add(qp.getPanel(), BorderLayout.CENTER);
+            frame.add(questionPanel.getPanel(), BorderLayout.CENTER);
+            frame.setResizable(true);
             frame.setVisible(true);
+
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("QuestionPanel kunde inte asnluta till servern");

@@ -15,8 +15,6 @@ public class CategoryPanel {
     private JPanel cardPanel;
     private ObjectOutputStream oos;
 
-    public CategoryPanel(){
-    }
 
     public CategoryPanel(List<String> categories, CardLayout cardLayout, JPanel cardPanel, ObjectOutputStream oos) {
         this.categories = categories;
@@ -53,8 +51,39 @@ public class CategoryPanel {
         return panel;
     }
 
+    private static JFrame createCategoryFrame() {
+        JFrame categoryFrame = new JFrame("QuizKampen");
+        categoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        categoryFrame.setSize(400, 300);
+        categoryFrame.setLocationRelativeTo(null);
+        return categoryFrame;
+    }
+
+    private static void addCategoryViews(CardLayout cardLayout, JPanel cardPanel, List<String> categories) {
+        for (String category : categories) {
+            JPanel categoryView = new JPanel();
+            categoryView.setLayout(new BorderLayout());
+
+            JLabel label = new JLabel("Du valde: " + category, SwingConstants.CENTER);
+            categoryView.add(label, BorderLayout.CENTER);
+            cardPanel.add(categoryView, category);
+        }
+    }
+
     public static void main(String[] args) {
-        CategoryPanel categoryPanel = new CategoryPanel();
+        List<String> categories = List.of("Kategori 1", "Kategori 2", "Kategori 3");
+        CardLayout cardLayout = new CardLayout();
+        JPanel cardPanel = new JPanel(cardLayout);
+        ObjectOutputStream oos = null;
+
+        CategoryPanel categoryPanel = new CategoryPanel(categories, cardLayout, cardPanel, oos);
+        categoryPanel.drawCategories();
+        cardPanel.add(categoryPanel.getPanel(), "CategoryView");
+        addCategoryViews(cardLayout, cardPanel, categories);
+
+        JFrame frame = createCategoryFrame();
+        frame.add(cardPanel);
+        frame.setVisible(true);
     }
 }
 
