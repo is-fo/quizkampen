@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +17,7 @@ import java.util.List;
     private CardLayout cardLayout;
     private JPanel cardPanel;
     private ObjectOutputStream oos;
+    private List<String> correctAnswers = new ArrayList<>();
 
     public QuestionPanel(Question question, ObjectOutputStream oos) {
         this.question = question;
@@ -32,6 +32,7 @@ import java.util.List;
         JLabel questionLabel = new JLabel(question.getQuestion());
         questionLabel.setFont(new Font("Arial", Font.BOLD, 16));
         questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -41,17 +42,29 @@ import java.util.List;
         for (String answer : question.getAnswers()) {
             JButton answerButton = new JButton(answer);
             answerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            answerButton.addActionListener(e -> handleAnswerSelection(answer));
+            answerButton.addActionListener(e -> handleAnswerSelection(answerButton, answer));
             panel.add(Box.createRigidArea(new Dimension(0, 5)));
             panel.add(answerButton);
         }
         cardPanel.add(panel, "QuestionPanel");
     }
 
-    private void handleAnswerSelection(String selectedAnswer) {
-        String message = selectedAnswer.equals(question.getCorrectAnswer())
-                ? "Rätt svar!" : "Fel svar. Rätt svar är: " + question.getCorrectAnswer();
-        JOptionPane.showMessageDialog(panel, message);
+    private void handleAnswerSelection(JButton button, String selectedAnswer) {
+
+        boolean isCorrect = selectedAnswer.equals(question.getCorrectAnswer());
+
+        if (isCorrect) {
+            button.setBackground(Color.GREEN);
+            correctAnswers.add(selectedAnswer);
+        } else {
+            button.setBackground(Color.RED);
+        }
+
+        for (Component comp : panel.getComponents()) {
+            if (comp instanceof JButton) {
+                comp.setEnabled(false);
+            }
+        }
 
         try {
             oos.writeObject(selectedAnswer);
@@ -63,6 +76,10 @@ import java.util.List;
 
         public JPanel getCardPanel() {
         return cardPanel;
+    }
+
+    public List<String> getCorrectAnswers() {
+        return correctAnswers;
     }
 
         public static void addQuestionViews(JPanel cardPanel, QuestionPanel questionPanel) {
