@@ -60,6 +60,17 @@ public class QuestionPanel {
         return panel;
     }
 
+    private static void addQuestionViews(QuestionPanel questionPanel) {
+        JFrame frame = new JFrame("QuizKampen");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
+        frame.setLayout(new BorderLayout());
+        frame.add(questionPanel.getPanel(), BorderLayout.CENTER);
+        frame.setResizable(true);
+        frame.setVisible(true);
+    }
+
+
     public static void main(String[] args) {
         List<String> answers = List.of("Blå", "Gul", "Vit", "Svart");
         Question question = new Question("Vilken färg har himlen?", answers, "Blå");
@@ -71,13 +82,7 @@ public class QuestionPanel {
             QuestionPanel questionPanel = new QuestionPanel(question, oos);
             questionPanel.drawQuestion();
 
-            JFrame frame = new JFrame("QuizKampen");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(400, 300);
-            frame.setLayout(new BorderLayout());
-            frame.add(questionPanel.getPanel(), BorderLayout.CENTER);
-            frame.setResizable(true);
-            frame.setVisible(true);
+            addQuestionViews(questionPanel);
 
         } catch (IOException e) {
             e.printStackTrace();
