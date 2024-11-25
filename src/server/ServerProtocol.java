@@ -33,7 +33,7 @@ public class ServerProtocol implements Runnable {
     public Object processInput(Object input, int player, GameState gameState) {
         Object output = null;
         int currentCategory = -1;
-        int scoreCurrentRound = 0;
+        int playerScore = 0;
         
         if (state == WAITING) {
             output = currentQuestions;
@@ -60,7 +60,7 @@ public class ServerProtocol implements Runnable {
             output = gameState;
             state = SHOW_RESULTS;
         } else if (state == SHOW_RESULTS) {
-            if (gameState.getCurrentRound() > 6) {
+            if (gameState.getCurrentRound() > 6) { //TODO maxrounds från Settings.properties
                 return new EndGame();
             }
             output = new Waiting();
