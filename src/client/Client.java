@@ -41,7 +41,7 @@ public class Client {
                         oos.writeObject(q.getCorrectAnswer());
 
                     }
-                    else if (!receivedList.isEmpty() && receivedList.getFirst() instanceof String category) {
+                    else if (!receivedList.isEmpty() && receivedList.getFirst() instanceof String) {
                         for(Object c : receivedList){
                             System.out.println(c);
                             oos.writeObject("Sport");
