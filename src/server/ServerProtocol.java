@@ -1,5 +1,6 @@
 package server;
 
+import pojos.EndGame;
 import pojos.Question;
 import pojos.Waiting;
 
@@ -47,7 +48,8 @@ public class ServerProtocol implements Runnable {
             state = CATEGORY_CHOSEN;
         } else if (state == CATEGORY_CHOSEN) {
             currentCategory = categories.getCategoryInt((String)input);
-            currentQuestions = categories.getNQuestions(1, currentCategory);
+
+            currentQuestions = categories.getTempQuestion(); //TODO skicka random frågor
             output = categories.getCategory(currentCategory);
             if (output != null) {
                 categories.setCurrentCategory((List<Question>) output);
@@ -58,6 +60,9 @@ public class ServerProtocol implements Runnable {
             output = gameState;
             state = SHOW_RESULTS;
         } else if (state == SHOW_RESULTS) {
+            if (gameState.getCurrentRound() > 6) {
+                return new EndGame();
+            }
             output = new Waiting();
             state = WAITING;
         } else if (state == ANSWER_QUESTION) {

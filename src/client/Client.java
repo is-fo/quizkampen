@@ -1,5 +1,6 @@
 package client;
 
+import pojos.EndGame;
 import pojos.Intro;
 import pojos.Question;
 import pojos.Waiting;
@@ -17,7 +18,7 @@ public class Client {
     private int roundsPerGame;
 
     Client() {
-        String hostName = "192.168.0.35";
+        String hostName = "localhost";
         int portNumber = 55555;
 
         try (
@@ -45,6 +46,11 @@ public class Client {
                     oos.writeObject(fromServer);
                 } else if (fromServer instanceof Waiting) {
                     oos.writeObject(fromServer);
+                } else if (fromServer instanceof EndGame) {
+                    oos.close();
+                    ois.close();
+                    addressSocket.close();
+                    break;
                 }
             }
         } catch (ClassNotFoundException e) {
