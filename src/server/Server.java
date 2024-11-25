@@ -20,6 +20,7 @@ public class Server implements Runnable {
     private void startServer(ServerSocket serverSocket) {
         try {
             int clientIndex = 0;
+
              while (clientIndex < MAX_CLIENTS) {
                  System.out.println("Listening for client connection...");
                 Socket clientSocket;

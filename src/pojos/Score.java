@@ -12,7 +12,7 @@ public class Score implements Serializable {
     }
 
     public void addScore(int player, int score) {
-        scores.add(player, score);
+        scores.add(score);
     }
 
     public int getScoreForRound(int round) {

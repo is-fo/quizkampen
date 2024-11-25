@@ -14,13 +14,13 @@ public class GameLogic implements Runnable {
     private final Socket[] clientSockets;
     private final ObjectInputStream[] in;
     private final ObjectOutputStream[] out;
-    private final ServerProtocol[] serverProtocols;
+    private ServerProtocol[] protocols;
 
-    public GameLogic(Socket[] clientSockets, ObjectInputStream[] in, ObjectOutputStream[] out, ServerProtocol[] serverProtocols) {
+    public GameLogic(Socket[] clientSockets, ObjectInputStream[] in, ObjectOutputStream[] out, ServerProtocol[] protocols) {
         this.clientSockets = clientSockets;
         this.in = in;
         this.out = out;
-        this.serverProtocols = serverProtocols;
+        this.protocols = protocols;
     }
 
     @Override
@@ -51,11 +51,11 @@ public class GameLogic implements Runnable {
                 System.out.println("Run started in GameLogic");
                 Object o;
                 while ((o = in[currentClient].readObject()) != null) {
-                    System.out.println("Received: " + o + " client: " + (currentClient + 1));
+                    System.out.println("Received: " + o + " client: " + (currentClient));
                     Object processed;
-                    processed = serverProtocols[currentClient].processInput(o, currentClient, gameState);
+                    processed = protocols[currentClient].processInput(o, currentClient, gameState);
                     out[currentClient].writeObject(processed);
-                    System.out.println("Sent:  " + processed + " to client: " + (currentClient + 1));
+                    System.out.println("Sent:  " + processed + " to client: " + (currentClient));
                     if (processed instanceof GameState) {
                         currentClient = (currentClient + 1) % MAX_CLIENTS; //nextClient()
                     }
