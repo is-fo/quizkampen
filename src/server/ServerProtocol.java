@@ -42,6 +42,7 @@ public class ServerProtocol implements Runnable {
                 gameState.addPlayerScore(score, player);
             }
             output = categories.getCategoryString(categories.getCategoryInt("Sport")); //TODO List<String> category random
+
             state = CATEGORY_CHOSEN;
         } else if (state == CATEGORY_CHOSEN) {
             currentCategory = categories.getCategoryInt((String)input);
