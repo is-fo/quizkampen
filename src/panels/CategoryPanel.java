@@ -21,7 +21,7 @@ public class CategoryPanel {
         this.oos = oos;
         this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;
-        this.panel = new JPanel();  // Skapar en ny JPanel för att lägga till knappar
+        this.panel = new JPanel();  // Create a new JPanel for the category buttons
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     }
 
