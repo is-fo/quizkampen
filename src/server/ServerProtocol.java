@@ -21,7 +21,6 @@ public class ServerProtocol implements Runnable {
     private int state = CHOOSE_CATEGORY;
     private Categories categories = new Categories();
     private List<Question> currentQuestions = new ArrayList<>(2);
-//    List<String> categoriesString = new ArrayList<>(Arrays.asList(categories.getCategoryString(categories.SPORT), categories.getCategoryString(categories.GEOGRAPHY)));
 
     private Socket socket;
 
@@ -32,18 +31,16 @@ public class ServerProtocol implements Runnable {
     @SuppressWarnings("unchecked")
     public Object processInput(Object input, int player, GameState gameState) {
         Object output = null;
-        int currentCategory = -1;
-        int playerScore = 0;
-        
+        int currentCategory;
+
         if (state == WAITING) {
             output = currentQuestions;
             System.out.println(gameState.getCurrentRound());
-            if (player == 0 && gameState.getCurrentRound() == 0) {
-                state = CHOOSE_CATEGORY;
-            } else {
-                state = ANSWER_QUESTION;
-            }
         } else if (state == CHOOSE_CATEGORY) {
+            if (gameState.getCurrentRound() != 0) {
+                int score = gameState.calculateScore((List<String>)input, currentQuestions);
+                gameState.addPlayerScore(score, player);
+            }
             output = categories.getCategoryString(categories.getCategoryInt("Sport")); //TODO List<String> category random
             state = CATEGORY_CHOSEN;
         } else if (state == CATEGORY_CHOSEN) {
@@ -57,6 +54,8 @@ public class ServerProtocol implements Runnable {
             gameState.incrementRound();
             state = PLAY_ROUND;
         } else if (state == PLAY_ROUND) {
+            int score = gameState.calculateScore((List<String>)input, currentQuestions);
+            gameState.addPlayerScore(score, player);
             output = gameState;
             state = SHOW_RESULTS;
         } else if (state == SHOW_RESULTS) {
@@ -77,22 +76,4 @@ public class ServerProtocol implements Runnable {
     public void run() {
 
     }
-
 }
-
-/*
-            List<?> answersCurrentCategory = (List<?>) input;
-            for (int i = 0 ; i < answersCurrentCategory.size(); i++) {
-                if (answersCurrentCategory.equals(categories.getNQuestions(2, currentCategory).get(i).getCorrectAnswer())){
-                    scoreCurrentRound++;
-                }
-            }
-            gameState.updatePlayerScores(currentRound, scoreCurrentRound, player);
-            output = gameState.getResults();
-
-             */
-//            if (player == 0 && gameState.getCurrentRound() % 2 == 0) {
-//                gameState.incrementRound();
-//            } else if (player == 1 && gameState.getCurrentRound() % 2 == 1) {
-//                gameState.incrementRound();
-//            }
