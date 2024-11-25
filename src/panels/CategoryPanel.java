@@ -28,6 +28,7 @@ public class CategoryPanel {
     }
 
     public void drawCategories() {
+        createCategoryFrame();
         for (String category : categories) {
             JButton categoryButton = new JButton(category);
             categoryButton.addActionListener(new ActionListener() {
@@ -53,12 +54,11 @@ public class CategoryPanel {
         return panel;
     }
 
-    private static JFrame createCategoryFrame() {
+    private void createCategoryFrame() {
         JFrame categoryFrame = new JFrame("QuizKampen");
-        categoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //categoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         categoryFrame.setSize(400, 300);
         categoryFrame.setLocationRelativeTo(null);
-        return categoryFrame;
     }
 
     private static void addCategoryViews(CardLayout cardLayout, JPanel cardPanel, List<String> categories) {
