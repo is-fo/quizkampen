@@ -1,5 +1,6 @@
 package client;
 
+import panels.CategoryPanel;
 import pojos.EndGame;
 import pojos.Intro;
 import pojos.Question;
@@ -44,10 +45,8 @@ public class Client {
                         oos.writeObject(answers);
                     }
                     else if (!receivedList.isEmpty() && receivedList.getFirst() instanceof String) {
-                        for(Object c : receivedList){
-                            System.out.println(c);
-                            oos.writeObject("Sport");
-                        }
+                        CategoryPanel cp = new CategoryPanel((List<String>)fromServer, oos);
+                        cp.drawCategories();
                     }
                 } else if (fromServer instanceof GameState gameState) {
                     System.out.println(gameState.getPlayerScores());

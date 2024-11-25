@@ -35,7 +35,6 @@ public class CategoryPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     System.out.println("Kategori vald: " + category);
-                    cardLayout.show(cardPanel,category);
                     try {
                         oos.writeObject(category);
                         oos.flush();
@@ -48,6 +47,7 @@ public class CategoryPanel {
             });
 
             panel.add(categoryButton);
+            categoryFrame.add(panel);
         }
     }
 
@@ -60,6 +60,7 @@ public class CategoryPanel {
         //categoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         categoryFrame.setSize(400, 300);
         categoryFrame.setLocationRelativeTo(null);
+        categoryFrame.setVisible(true);
     }
 
     private void closeCategoryFrame() {
