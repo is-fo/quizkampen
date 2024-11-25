@@ -1,6 +1,4 @@
-package server;
-
-import pojos.Question;
+package pojos;
 
 import java.io.Serializable;
 import java.util.*;
@@ -94,23 +92,7 @@ public class Categories implements Serializable {
     }
 
     public List<String> getCategoriesStringList ( int categoriesToGenerate){
-/*
-            List<String> categories = new ArrayList<>();
-            categories.add("Sport");
-            categories.add("Geography");
 
-            Random random = new Random();
-
-            List<String> randomCategories = new ArrayList<>();
-            while (randomCategories.size() < 2) {
-                String category = categories.get(random.nextInt(categories.size()));
-                if (!randomCategories.contains(category)) {
-                    randomCategories.add(category);
-                }
-            }
-            return randomCategories;
-        }
-*/
         Random rand = new Random();
 
         HashSet<Integer> s = new HashSet<Integer>();

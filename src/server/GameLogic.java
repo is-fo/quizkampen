@@ -1,5 +1,6 @@
 package server;
 
+import pojos.GameState;
 import pojos.Intro;
 
 import java.io.*;

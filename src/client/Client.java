@@ -4,7 +4,7 @@ import pojos.EndGame;
 import pojos.Intro;
 import pojos.Question;
 import pojos.Waiting;
-import server.GameState;
+import pojos.GameState;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

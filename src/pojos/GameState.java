@@ -1,13 +1,11 @@
-package server;
-
-import pojos.Question;
+package pojos;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-import static server.Categories.*;
+import static pojos.Categories.*;
 
 public class GameState implements Serializable {
 

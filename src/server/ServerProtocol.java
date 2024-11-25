@@ -1,12 +1,9 @@
 package server;
 
-import pojos.EndGame;
-import pojos.Question;
-import pojos.Waiting;
+import pojos.*;
 
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ServerProtocol implements Runnable {
@@ -46,7 +43,7 @@ public class ServerProtocol implements Runnable {
             state = CATEGORY_CHOSEN;
         } else if (state == CATEGORY_CHOSEN) {
             currentCategory = categories.getCategoryInt((String)input);
-
+            gameState.addCategory((String)input);
             currentQuestions = categories.getTempQuestion(); //TODO skicka random frågor
             output = categories.getCategory(currentCategory);
             if (output != null) {
