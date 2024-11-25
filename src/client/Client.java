@@ -31,7 +31,7 @@ public class Client {
 
                 if (fromServer instanceof Intro) {
                     oos.writeObject(fromServer);
-                } else if (fromServer instanceof String) { //TODO fromserver List<String> categories
+                } else if (fromServer instanceof String) {
                     System.out.println(fromServer + "<- category received");
                     oos.writeObject("Sport");
                 } else if (fromServer instanceof List<?>) {
@@ -39,13 +39,11 @@ public class Client {
                     if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question q) {
                         System.out.println(q.getCorrectAnswer());
                         oos.writeObject(q.getCorrectAnswer());
-
                     }
                     else if (!receivedList.isEmpty() && receivedList.getFirst() instanceof String) {
                         for(Object c : receivedList){
                             System.out.println(c);
                             oos.writeObject("Sport");
-
                         }
                     }
                 } else if (fromServer instanceof GameState gameState) {
