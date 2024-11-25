@@ -3,9 +3,7 @@ package server;
 import pojos.Question;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Categories implements Serializable {
 
@@ -94,4 +92,38 @@ public class Categories implements Serializable {
         }
         return questions;
     }
+
+    public List<String> getCategoriesStringList ( int categoriesToGenerate){
+/*
+            List<String> categories = new ArrayList<>();
+            categories.add("Sport");
+            categories.add("Geography");
+
+            Random random = new Random();
+
+            List<String> randomCategories = new ArrayList<>();
+            while (randomCategories.size() < 2) {
+                String category = categories.get(random.nextInt(categories.size()));
+                if (!randomCategories.contains(category)) {
+                    randomCategories.add(category);
+                }
+            }
+            return randomCategories;
+        }
+*/
+        Random rand = new Random();
+
+        HashSet<Integer> s = new HashSet<Integer>();
+        while (s.size() < categoriesToGenerate) {
+            s.add(rand.nextInt(allQuestions.size()));
+        }
+        List<String> categories = new ArrayList<>();
+
+        for (Integer i : s) {
+            categories.add(getCategoryString(i));
+        }
+        return categories;
+    }
+
+
 }
