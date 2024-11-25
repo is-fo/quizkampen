@@ -1,4 +1,6 @@
 package pojos;
 
-public class EndGame {
+import java.io.Serializable;
+
+public class EndGame implements Serializable {
 }
