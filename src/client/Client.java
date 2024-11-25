@@ -19,7 +19,7 @@ public class Client {
     private int roundsPerGame;
 
     Client() {
-        String hostName = "localhost";
+        String hostName = "192.168.0.35";
         int portNumber = 55555;
 
         try (
