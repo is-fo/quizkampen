@@ -13,10 +13,9 @@ public class GameState implements Serializable {
 
     private List<Score> playerScores = new ArrayList<>();
     private List<String> categories = new ArrayList<>();
+    private List<Question> questions = new ArrayList<>();
     private int currentRound = 0;
     private int category = SPORT;
-
-
 
     public GameState(int numRounds, int numQuestions) {
 
@@ -51,8 +50,8 @@ public class GameState implements Serializable {
         return correctAnswers;
     }
 
-    public void updatePlayerScores(int score, int player) {
-        playerScores.get(player).setScores(currentRound, score);
+    public void addPlayerScore(int score, int player) {
+        playerScores.get(player).addScore(currentRound, score);
     }
 
     public void incrementRound() {
@@ -71,7 +70,7 @@ public class GameState implements Serializable {
         return playerScores;
     }
 
-    public GameState getResults() {
+    public GameState getGamestate() {
         return this;
     }
 
