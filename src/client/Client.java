@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -38,7 +39,9 @@ public class Client {
                     List<?> receivedList = (List<?>) fromServer;
                     if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question q) {
                         System.out.println(q.getCorrectAnswer());
-                        oos.writeObject(q.getCorrectAnswer());
+                        List<String> answers = new ArrayList<>();
+                        answers.add(q.getCorrectAnswer());
+                        oos.writeObject(answers);
                     }
                     else if (!receivedList.isEmpty() && receivedList.getFirst() instanceof String) {
                         for(Object c : receivedList){
