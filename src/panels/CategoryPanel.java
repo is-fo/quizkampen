@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
+
+//TODO Katogori knappar storlek
 public class CategoryPanel {
 
     private List<String> categories;
@@ -21,7 +23,7 @@ public class CategoryPanel {
         this.oos = oos;
         this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;
-        this.panel = new JPanel();  // Create a new JPanel for the category buttons
+        this.panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     }
 

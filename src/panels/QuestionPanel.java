@@ -10,7 +10,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuestionPanel {
+//TODO Fixa kanpparna --> Röd/Grön + grafik + Lista med alla rätta svar.
+    public class QuestionPanel {
 
     private Question question;
     private JPanel panel;
@@ -60,7 +61,7 @@ public class QuestionPanel {
         }
     }
 
-    public JPanel getCardPanel() {
+        public JPanel getCardPanel() {
         return cardPanel;
     }
 
@@ -86,23 +87,6 @@ public class QuestionPanel {
             JPanel cardPanel = new JPanel(new CardLayout());
             addQuestionViews(cardPanel, questionPanel);
             createQuestionFrame(cardPanel);
-
-
-
-
-            /*try {
-                Socket socket = new Socket("localhost", 55555);
-                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-                QuestionPanel questionPanel = new QuestionPanel(question,null);
-                questionPanel.drawQuestion();
-                JPanel cardPanel = new JPanel(new CardLayout());
-                addQuestionViews(cardPanel, questionPanel);
-                createQuestionFrame(cardPanel);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("QuestionPanel kunde inte ansluta till servern");
-            }*/
         }
     }
 

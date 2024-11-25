@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-
+//TODO Koppla GameState till ResultPanel
 public class ResultPanel extends JPanel {
     private final List<JLabel> player1Scores = new ArrayList<>();
     private final List<JLabel> categories = new ArrayList<>();
@@ -76,7 +76,6 @@ public class ResultPanel extends JPanel {
             // Exempel på att uppdatera resultat
             resultPanel.updateRound(1, 10, 5, "Geografi");
             resultPanel.updateRound(2, 20, 15, "Historia");
-
 
         });
     }
