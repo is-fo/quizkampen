@@ -60,6 +60,7 @@ public class Client {
                     addressSocket.close();
                     break;
                 }
+                oos.flush();
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
