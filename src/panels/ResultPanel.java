@@ -75,29 +75,32 @@ public class ResultPanel extends JPanel {
 
     private void switchToNextScreen() {
         CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+        int currentRound = gameState.getCurrentRound();
+        int totalRounds = 6;
 
-        if (gameState.getCurrentRound() >= 6) {
-            int[] player1ScoresArray = new int[6];
-            int[] player2ScoresArray = new int[6];
-            String[] categoriesArray = new String[6];
+        if (currentRound >= totalRounds) {
+            int[] player1ScoresArray = new int[totalRounds];
+            int[] player2ScoresArray = new int[totalRounds];
+            String[] categoriesArray = new String[totalRounds];
 
-            for (int round = 0; round < 6; round++) {
+            for (int round = 0; round < totalRounds; round++) {
                 player1ScoresArray[round] = gameState.getScore(0);
                 player2ScoresArray[round] = gameState.getScore(1);
-                //categoriesArray[round] = getCategoryForRound(round);
+                //categoriesArray[round] = gameState.getCategoryForRound(round);
                 gameState.incrementRound();
             }
-            updateFinalResults(6, player1ScoresArray, player2ScoresArray, categoriesArray);
+            updateFinalResults(totalRounds, player1ScoresArray, player2ScoresArray, categoriesArray);
             cardLayout.show(mainPanel, "resultPanel");
-        } else if (gameState.getCurrentRound() % 2 == 0) {
-            cardLayout.show(mainPanel, "categoryPanel");
         } else {
-            cardLayout.show(mainPanel, "questionPanel");
+            if (currentRound % 2 == 0) {
+                cardLayout.show(mainPanel, "categoryPanel");
+            } else {
+                cardLayout.show(mainPanel, "questionPanel");
+            }
         }
     }
 
-
-    public static void main(String[] args) {
+        public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("QuizKampen Resultat");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -115,4 +118,5 @@ public class ResultPanel extends JPanel {
         });
     }
 }
+
 
