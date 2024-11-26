@@ -9,110 +9,141 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO Fixa kanpparna --> Röd/Grön + grafik + Lista med alla rätta svar.
-    public class QuestionPanel {
+public class QuestionPanel {
 
-    private Question question;
+    private JFrame questionFrame;
+    private List<Question> questions;
     private JPanel panel;
     private CardLayout cardLayout;
     private JPanel cardPanel;
+    private List<String> selectedAnswers = new ArrayList<>();
     private ObjectOutputStream oos;
-    private List<String> correctAnswers = new ArrayList<>();
 
-    public QuestionPanel(Question question, ObjectOutputStream oos) {
-        this.question = question;
-        this.oos = oos;
+    int index = 0;
+    public boolean done = false;
+
+    public QuestionPanel(List<Question> questions, ObjectOutputStream oos) {
+        this.questions = questions;
         this.cardPanel = new JPanel();
         this.cardLayout = new CardLayout();
+        this.oos = oos;
         cardPanel.setLayout(cardLayout);
     }
 
-    public void drawQuestion() {
-        //TODO en label med frågar
-        panel = new JPanel(new BorderLayout(10, 10));
-        JPanel questionPanel = new JPanel();
-        questionPanel.setBackground(Color.LIGHT_GRAY);
-        questionPanel.setLayout(new BorderLayout());
+    public void drawAll() {
 
-        JLabel questionLabel = new JLabel(question.getQuestion());
-        questionLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        questionPanel.add(questionLabel, BorderLayout.CENTER);
+        for (int index = 0; index < questions.size(); index++) {
+            panel = new JPanel(new BorderLayout(10, 10));
+            JPanel questionPanel = new JPanel();
+            questionPanel.setBackground(Color.LIGHT_GRAY);
+            questionPanel.setLayout(new BorderLayout());
 
-        panel.add(questionPanel, BorderLayout.NORTH);
+            JLabel questionLabel = new JLabel(questions.get(index).getQuestion());
+            questionLabel.setFont(new Font("Arial", Font.BOLD, 20));
+            questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            questionPanel.add(questionLabel, BorderLayout.CENTER);
+            panel.add(questionPanel, BorderLayout.NORTH);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+            JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+            for (String answer : questions.get(index).getAnswers()) {
+                JButton answerButton = new JButton(answer);
+                answerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+                int finalIndex = index;
+                answerButton.addActionListener(e -> {
 
-        //TODO svarsalternativ -> returnera en String
-        for (String answer : question.getAnswers()) {
-            JButton answerButton = new JButton(answer);
-            answerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            answerButton.addActionListener(e -> handleAnswerSelection(answerButton, answer));
-            buttonPanel.add(answerButton);
+                    handleAnswerSelection(answerButton, answer);
+                    System.out.println(getAnswers());
+
+                    Timer timer = new Timer(1000, e2 -> {
+                        if (finalIndex < questions.size() - 1) {
+                            cardLayout.next(cardPanel);
+                        } else {
+                            hideQuestionFrame();
+                            try {
+                                oos.writeObject(getAnswers());
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                                System.err.println("Error sending answer list to server: " + ex.getMessage());
+                            }
+                        }
+                        ((Timer) e2.getSource()).stop();
+                    });
+                    timer.setRepeats(false);
+                    timer.start();
+
+                });
+                buttonPanel.add(answerButton);
+            }
+            panel.add(buttonPanel, BorderLayout.CENTER);
+            panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+            cardPanel.add(panel, "Question " + (index + 1));
 
         }
-        panel.add(buttonPanel, BorderLayout.CENTER);
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        cardPanel.add(panel, "QuestionPanel");
+        showQuestionFrame();
     }
 
     private void handleAnswerSelection(JButton button, String selectedAnswer) {
 
-        boolean isCorrect = selectedAnswer.equals(question.getCorrectAnswer());
+        boolean isCorrect = selectedAnswer.equals(questions.get(index).getCorrectAnswer());
 
         if (isCorrect) {
             button.setBackground(Color.GREEN);
-            correctAnswers.add(selectedAnswer);
         } else {
             button.setBackground(Color.RED);
         }
 
-        for (Component component : panel.getComponents()) {
-            if (component instanceof JPanel) {
-                for (Component btn : ((JPanel) component).getComponents()) {
-                    if (btn instanceof JButton) {
-                        btn.setEnabled(false);
-                    }
-                }
+        JPanel buttonPanel = (JPanel) button.getParent().getParent().getComponent(1);
+        for (Component component : buttonPanel.getComponents()) {
+            if (component instanceof JButton) {
+                component.setEnabled(false);
             }
         }
 
-        try {
-            oos.writeObject(selectedAnswer);
-            oos.flush();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        selectedAnswers.add(selectedAnswer);
     }
 
-        public JPanel getCardPanel() {
-        return cardPanel;
-    }
-
-    public List<String> getCorrectAnswers() {
-        return correctAnswers;
-    }
-
-    public static void addQuestionViews(JPanel cardPanel, QuestionPanel questionPanel) {
-        cardPanel.add(questionPanel.getCardPanel(), "QuestionPanel");
-    }
+    public JPanel getCardPanel() {
+    return cardPanel;
+}
 
     public void showQuestionFrame() {
-        JFrame questionFrame = new JFrame("QuizKampen");
+        questionFrame = new JFrame("QuizKampen");
         questionFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        questionFrame.setSize(800, 600);
-        questionFrame.add(this.getCardPanel());
+        questionFrame.setSize(801, 601);
+        questionFrame.add(cardPanel);
         questionFrame.setLocationRelativeTo(null);
         questionFrame.setVisible(true);
     }
 
-        public static void main (String[]args){
-            List<String> answers = List.of("Blå", "Gul", "Vit", "Svart");
-            Question question = new Question("Vilken färg har himlen?", answers, "Blå");
-            QuestionPanel questionPanel = new QuestionPanel(question, null);
-            questionPanel.drawQuestion();
-            questionPanel.showQuestionFrame();
-        }
+    public void hideQuestionFrame() {
+        questionFrame.dispose();
+    }
+
+    public List<String> getAnswers() {
+        return selectedAnswers;
+    }
+
+    public static void main(String[] args) {
+//        List<Question> questions = new ArrayList<>();
+//        List<String> an1 = new ArrayList<>();
+//        an1.add("1");
+//        an1.add("2");
+//        an1.add("3");
+//        an1.add("4");
+//        List<String> an2 = new ArrayList<>();
+//        an2.add("5");
+//        an2.add("6");
+//        an2.add("7");
+//        an2.add("8");
+//        questions.add(new Question("HEj!", an1, "2"));
+//        questions.add(new Question("då!", an1, "7"));
+//
+//        QuestionPanel questionPanel = new QuestionPanel(questions);
+//        questionPanel.drawAll();
+//
+//        System.out.println(questionPanel.getAnswers());
+
+    }
 }
 
