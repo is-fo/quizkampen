@@ -41,9 +41,9 @@ public class ServerProtocol {
             System.out.println("STATE == CATEGORY_CHOSEN: " + player);
             currentCategory = categories.getCategoryInt((String)input);
             gameState.addCategory((String)input);
-            currentQuestions = categories.getTempQuestion(); //TODO skicka random frågor
-            System.out.println(currentQuestions + "<---------------");
             output = categories.getCategory(currentCategory);
+            currentQuestions = (List<Question>) output;
+            System.out.println(currentQuestions + "<---------------");
             if (output != null) {
                 categories.setCurrentCategory((List<Question>) output);
             } else System.exit(30);

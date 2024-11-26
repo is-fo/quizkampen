@@ -10,8 +10,6 @@ public class Server implements Runnable {
     public static final int PORT = 55555;
     public static final int MAX_CLIENTS = 2;
 
-
-
     private synchronized void startServer(ServerSocket serverSocket) {
         try {
             int clientIndex = 0;
@@ -20,11 +18,11 @@ public class Server implements Runnable {
             ObjectOutputStream[] out = new ObjectOutputStream[MAX_CLIENTS];
 
              while (clientIndex < MAX_CLIENTS) {
-                 System.out.println("Listening for client connection...");
+                System.out.println("Listening for client connection...");
                 Socket clientSocket;
                 clientSocket = serverSocket.accept();
                 clientSockets[clientIndex] = clientSocket;
-                 System.out.println("Client " + (clientIndex + 1) + "/" + MAX_CLIENTS + " connected." );
+                System.out.println("Client " + (clientIndex + 1) + "/" + MAX_CLIENTS + " connected." );
 
                 in[clientIndex] = new ObjectInputStream(clientSocket.getInputStream());
                 out[clientIndex] = new ObjectOutputStream(clientSocket.getOutputStream());

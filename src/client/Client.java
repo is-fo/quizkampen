@@ -1,6 +1,7 @@
 package client;
 
 import panels.CategoryPanel;
+import panels.QuestionPanel;
 import pojos.EndGame;
 import pojos.Intro;
 import pojos.Question;
@@ -39,17 +40,12 @@ public class Client {
                 } else if (fromServer instanceof List<?>) {
                     List<?> receivedList = (List<?>) fromServer;
                     if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question q) {
-                        System.out.println(q.getCorrectAnswer());
-                        List<String> answers = new ArrayList<>();
-                        answers.add(q.getCorrectAnswer());
-                        oos.writeObject(answers);
+                        QuestionPanel qp = new QuestionPanel((List<Question>) receivedList, oos);
+                        qp.drawAll();
                     }
                     else if (!receivedList.isEmpty() && receivedList.getFirst() instanceof String) {
-
                         CategoryPanel cp = new CategoryPanel((List<String>)fromServer, oos);
                         cp.drawCategories();
-
-
                     }
                 } else if (fromServer instanceof GameState gameState) {
                     System.out.println(gameState.getPlayerScores());

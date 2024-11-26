@@ -6,15 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ObjectOutputStream;
 import java.util.List;
+import java.util.Timer;
 
-
-//TODO Katogori knappar storlek
 public class CategoryPanel {
 
     private List<String> categories;
     private JPanel panel;
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
     private ObjectOutputStream oos;
     private JFrame categoryFrame;
 
@@ -22,15 +19,19 @@ public class CategoryPanel {
     public CategoryPanel(List<String> categories, ObjectOutputStream oos) {
         this.categories = categories;
         this.oos = oos;
-        this.panel = new JPanel();
+        this.panel = new JPanel(new BorderLayout());;
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     }
 
     public void drawCategories() {
         createCategoryFrame();
 
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 20, 20));
+
         for (String category : categories) {
             JButton categoryButton = new JButton(category);
+            categoryButton.setFont(new Font("Arial", Font.BOLD, 18));
+            categoryButton.setPreferredSize(new Dimension(200, 100));
             categoryButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -41,24 +42,21 @@ public class CategoryPanel {
                         closeCategoryFrame();
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        JOptionPane.showMessageDialog(panel, "Fel vid kommunikation med servern.");
+                        System.err.println("Fel vid kommunikation med servern.");
                     }
                 }
             });
-
-            panel.add(categoryButton);
-            categoryFrame.add(panel);
+            buttonPanel.add(categoryButton);
         }
-    }
-
-    public JPanel getPanel() {
-        return panel;
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.add(buttonPanel, BorderLayout.CENTER);
+        categoryFrame.add(panel);
     }
 
     private void createCategoryFrame() {
         categoryFrame = new JFrame("QuizKampen");
-        //categoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        categoryFrame.setSize(400, 300);
+        categoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        categoryFrame.setSize(800, 600);
         categoryFrame.setLocationRelativeTo(null);
         categoryFrame.setVisible(true);
     }
@@ -66,5 +64,6 @@ public class CategoryPanel {
     private void closeCategoryFrame() {
         categoryFrame.dispose();
     }
+
 }
 
