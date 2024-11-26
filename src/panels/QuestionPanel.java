@@ -94,9 +94,9 @@ import java.util.List;
         return correctAnswers;
     }
 
-        public static void addQuestionViews(JPanel cardPanel, QuestionPanel questionPanel) {
-            cardPanel.add(questionPanel.getCardPanel(), "QuestionPanel");
-        }
+    public static void addQuestionViews(JPanel cardPanel, QuestionPanel questionPanel) {
+        cardPanel.add(questionPanel.getCardPanel(), "QuestionPanel");
+    }
 
     public void showQuestionFrame() {
         JFrame questionFrame = new JFrame("QuizKampen");
