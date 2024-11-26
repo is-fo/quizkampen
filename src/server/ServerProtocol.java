@@ -6,27 +6,21 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerProtocol implements Runnable {
+public class ServerProtocol {
 
-    private static final int WAITING = 0;
-    private static final int CHOOSE_CATEGORY = 1;
-    private static final int CATEGORY_CHOSEN = 11;
-    private static final int PLAY_ROUND = 2;
-    private static final int SHOW_RESULTS = 3;
-    private static final int ANSWER_QUESTION = 4;
+    private final int WAITING = 0;
+    private final int CHOOSE_CATEGORY = 1;
+    private final int CATEGORY_CHOSEN = 11;
+    private final int PLAY_ROUND = 2;
+    private final int SHOW_RESULTS = 3;
+    private final int ANSWER_QUESTION = 4;
 
-    private static int state = WAITING;
-    private static Categories categories = new Categories();
-    private static List<Question> currentQuestions = new ArrayList<>(2);
-
-    private Socket socket;
-
-    public ServerProtocol(Socket socket) {
-        this.socket = socket;
-    }
+    private int state = WAITING;
+    private Categories categories = new Categories();
+    private  List<Question> currentQuestions = new ArrayList<>(2);
 
     @SuppressWarnings("unchecked")
-    public static Object processInput(Object input, int player, GameState gameState) {
+    public synchronized Object processInput(Object input, int player, GameState gameState) {
         Object output = null;
         int currentCategory;
 
@@ -88,10 +82,5 @@ public class ServerProtocol implements Runnable {
         }
 
         return output;
-    }
-
-    @Override
-    public void run() {
-
     }
 }

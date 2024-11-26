@@ -7,24 +7,24 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Properties;
 
-import static server.Server.*;
 import static server.Server.MAX_CLIENTS;
 
 public class GameLogic implements Runnable {
     private final Socket[] clientSockets;
     private final ObjectInputStream[] in;
     private final ObjectOutputStream[] out;
-    private ServerProtocol[] protocols;
+    private final ServerProtocol protocol;
 
-    public GameLogic(Socket[] clientSockets, ObjectInputStream[] in, ObjectOutputStream[] out, ServerProtocol[] protocols) {
+    public GameLogic(Socket[] clientSockets, ObjectInputStream[] in, ObjectOutputStream[] out, ServerProtocol protocol) {
         this.clientSockets = clientSockets;
         this.in = in;
         this.out = out;
-        this.protocols = protocols;
+        this.protocol = protocol;
     }
 
     @Override
     public void run() {
+        /*
         Properties p = new Properties();
         try {
             p.load(new FileInputStream("src/server/Settings.properties"));
@@ -35,16 +35,19 @@ public class GameLogic implements Runnable {
         int roundsPerGame = Integer.parseInt(p.getProperty("roundsPerGame", "2"));
         int questionsPerRound = Integer.parseInt(p.getProperty("questionsPerRound", "2"));
 
-        GameState gameState = new GameState(roundsPerGame, questionsPerRound);
+        */
+        GameState gameState = new GameState(2, 2);
+
         int currentClient = 0;
 
         for (int i = 0; i < MAX_CLIENTS; i++) {
             try {
-                out[i].writeObject(new Intro(questionsPerRound,roundsPerGame));
+                out[i].writeObject(new Intro(2, 2));
             } catch (IOException e) {
                 System.err.println("Error intro: " + e.getMessage());
             }
         }
+
 
         while (true) {
             try {
@@ -53,7 +56,7 @@ public class GameLogic implements Runnable {
                 while ((o = in[currentClient].readObject()) != null) {
                     System.out.println("Received: " + o + " client: " + (currentClient));
                     Object processed;
-                    processed = protocols[currentClient].processInput(o, currentClient, gameState);
+                    processed = protocol.processInput(o, currentClient, gameState);
                     out[currentClient].writeObject(processed);
                     System.out.println("Sent:  " + processed + " to client: " + (currentClient));
                     if (processed instanceof GameState) {
@@ -70,12 +73,10 @@ public class GameLogic implements Runnable {
                         clientSockets[i].close();
                         in[i].close();
                         out[i].close();
-                        clientCount--;
                     } catch (IOException ex) {
                         System.err.println("Error closing socket connections: " + ex.getMessage());
                     }
                 }
-                System.out.println("Clients disconnected, new total: " + clientCount);
                 break;
             }
         }
