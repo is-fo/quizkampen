@@ -40,13 +40,8 @@ public class Client {
                 } else if (fromServer instanceof List<?>) {
                     List<?> receivedList = (List<?>) fromServer;
                     if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question q) {
-                        System.out.println(q.getCorrectAnswer());
-//                        answers.add(q.getCorrectAnswer());
-//                        oos.writeObject(answers);
-//                        Question question = (Question) receivedList.get(0);
-//                        QuestionPanel qp = new QuestionPanel(question, oos);
-//                        qp.drawQuestion();
-//                        qp.showQuestionFrame();
+                        QuestionPanel qp = new QuestionPanel((List<Question>) receivedList, oos);
+                        qp.drawAll();
                     }
                     else if (!receivedList.isEmpty() && receivedList.getFirst() instanceof String) {
                         CategoryPanel cp = new CategoryPanel((List<String>)fromServer, oos);
