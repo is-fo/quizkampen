@@ -21,7 +21,7 @@ public class Client {
     private int roundsPerGame;
 
     Client() {
-        String hostName = "192.168.0.30";
+        String hostName = "172.20.205.138";
         int portNumber = 55555;
 
         try (
@@ -33,6 +33,7 @@ public class Client {
                 Object fromServer = ois.readObject();
 
                 if (fromServer instanceof Intro) {
+
                     oos.writeObject(fromServer);
                 } else if (fromServer instanceof String) {
                     System.out.println(fromServer + "<- category received");

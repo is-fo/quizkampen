@@ -62,7 +62,6 @@ public class CategoryPanel {
 
     private void createCategoryFrame() {
         categoryFrame = new JFrame("QuizKampen");
-        //categoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         categoryFrame.setSize(800, 600);
         categoryFrame.setLocationRelativeTo(null);
         categoryFrame.setVisible(true);

@@ -14,8 +14,8 @@ import java.util.List;
 
     private Question question;
     private JPanel panel;
-    private CardLayout cardLayout;
     private JPanel cardPanel;
+    private CardLayout cardLayout;
     private ObjectOutputStream oos;
     private List<String> correctAnswers = new ArrayList<>();
 
@@ -53,7 +53,7 @@ import java.util.List;
 
         }
         panel.add(buttonPanel, BorderLayout.CENTER);
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         cardPanel.add(panel, "QuestionPanel");
     }
 
@@ -100,7 +100,7 @@ import java.util.List;
 
     public void showQuestionFrame() {
         JFrame questionFrame = new JFrame("QuizKampen");
-        questionFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        //questionFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         questionFrame.setSize(800, 600);
         questionFrame.add(this.getCardPanel());
         questionFrame.setLocationRelativeTo(null);
