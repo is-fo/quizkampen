@@ -48,7 +48,7 @@ public class ResultPanel extends JPanel  {
             gg.sendGiveUpToServer();
             gg.closeConnection();
             geUppButton.setEnabled(false);
-        });// Inaktivera Ge upp-knappen så att den inte kan klickas igen
+        });
 
 
         playAgainButton.addActionListener(e1 -> reset());
@@ -57,7 +57,7 @@ public class ResultPanel extends JPanel  {
         buttonPanel.add(playAgainButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Inaktivera Ge upp-knappen så att den inte kan klickas igen
+
 
     }
 

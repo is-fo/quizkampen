@@ -47,21 +47,7 @@ public class Categories implements Serializable {
         return allQuestions.get(category);
     }
 
-    public String getCategoryString(int category) {
-        return switch (category) {
-            case SPORT -> "Sport";
-            case GEOGRAPHY -> "Geography";
-            default -> "FAIL!";
-        };
-    }
 
-    public int getCategoryInt(String category) {
-        return switch(category){
-            case "Sport" -> SPORT;
-            case "Geography" -> GEOGRAPHY;
-            default -> 0;
-        };
-    }
 
     public void setCurrentCategory(List<Question> category) {
         currentQuestions = category;
