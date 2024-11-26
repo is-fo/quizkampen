@@ -123,27 +123,5 @@ public class QuestionPanel {
     public List<String> getAnswers() {
         return selectedAnswers;
     }
-
-    public static void main(String[] args) {
-//        List<Question> questions = new ArrayList<>();
-//        List<String> an1 = new ArrayList<>();
-//        an1.add("1");
-//        an1.add("2");
-//        an1.add("3");
-//        an1.add("4");
-//        List<String> an2 = new ArrayList<>();
-//        an2.add("5");
-//        an2.add("6");
-//        an2.add("7");
-//        an2.add("8");
-//        questions.add(new Question("HEj!", an1, "2"));
-//        questions.add(new Question("då!", an1, "7"));
-//
-//        QuestionPanel questionPanel = new QuestionPanel(questions);
-//        questionPanel.drawAll();
-//
-//        System.out.println(questionPanel.getAnswers());
-
-    }
 }
 
