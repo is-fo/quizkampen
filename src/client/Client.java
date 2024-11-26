@@ -41,9 +41,8 @@ public class Client {
                     List<?> receivedList = (List<?>) fromServer;
                     if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question q) {
                         System.out.println(q.getCorrectAnswer());
-                        List<String> answers = new ArrayList<>();
-                        answers.add(q.getCorrectAnswer());
-                        oos.writeObject(answers);
+//                        answers.add(q.getCorrectAnswer());
+//                        oos.writeObject(answers);
 //                        Question question = (Question) receivedList.get(0);
 //                        QuestionPanel qp = new QuestionPanel(question, oos);
 //                        qp.drawQuestion();
