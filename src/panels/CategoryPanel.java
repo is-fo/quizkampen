@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ObjectOutputStream;
 import java.util.List;
+import java.util.Timer;
 
 
 //TODO Katogori knappar storlek
@@ -13,8 +14,6 @@ public class CategoryPanel {
 
     private List<String> categories;
     private JPanel panel;
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
     private ObjectOutputStream oos;
     private JFrame categoryFrame;
 
@@ -45,7 +44,7 @@ public class CategoryPanel {
                         closeCategoryFrame();
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        JOptionPane.showMessageDialog(panel, "Fel vid kommunikation med servern.");
+                        System.err.println("Fel vid kommunikation med servern.");
                     }
                 }
             });
@@ -56,13 +55,9 @@ public class CategoryPanel {
         categoryFrame.add(panel);
     }
 
-    public JPanel getPanel() {
-        return panel;
-    }
-
     private void createCategoryFrame() {
         categoryFrame = new JFrame("QuizKampen");
-        //categoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        categoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         categoryFrame.setSize(800, 600);
         categoryFrame.setLocationRelativeTo(null);
         categoryFrame.setVisible(true);
