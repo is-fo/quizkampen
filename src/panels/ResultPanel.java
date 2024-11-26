@@ -3,6 +3,8 @@ import pojos.GameState;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +25,11 @@ public class ResultPanel{
     private ObjectOutputStream oos;
 
 
-    public ResultPanel(GameState gameState, ObjectOutputStream oos) {
+    public ResultPanel(GameState gameState, ObjectOutputStream oos, int roundsPerGame) {
         this.gameState = gameState;
         this.cardPanel = new JPanel();
         this.cardLayout = new CardLayout();
+        this.roundsPerGame = roundsPerGame;
         this.oos = oos;
         cardPanel.setLayout(cardLayout);
 
@@ -41,24 +44,33 @@ public class ResultPanel{
         resultPanel.add(new JLabel("player2", SwingConstants.CENTER));
 
         for (int i = 0; i < roundsPerGame; i++) {
-            JLabel player1Label = new JLabel("", SwingConstants.CENTER);
-            JLabel categoryLabel = new JLabel("", SwingConstants.CENTER);
-            JLabel player2Label = new JLabel("", SwingConstants.CENTER);
+            JLabel player1ScoreLabel = new JLabel("sp1", SwingConstants.CENTER);
+            JLabel categoryLabel = new JLabel("kat", SwingConstants.CENTER);
+            JLabel player2ScoreLabel = new JLabel("sp2", SwingConstants.CENTER);
 
-            player1Scores.add(player1Label);
+            player1Scores.add(player1ScoreLabel);
             categories.add(categoryLabel);
-            player2Scores.add(player2Label);
+            player2Scores.add(player2ScoreLabel);
 
-            resultPanel.add(player1Label);
+            resultPanel.add(player1ScoreLabel);
             resultPanel.add(categoryLabel);
-            resultPanel.add(player2Label);
+            resultPanel.add(player2ScoreLabel);
+
         }
 
-        for (int i = 0; i < categories.size(); i++) {
+       /* for (int i = 0; i < roundsPerGame; i++) {
             player1Scores.get(i).setText(String.valueOf(gameState.getPlayerScores().get(0).getScoreForRound(i)));
             categories.get(i).setText(String.valueOf(gameState.getCategory(i)));
             player2Scores.get(i).setText(String.valueOf(gameState.getPlayerScores().get(1).getScoreForRound(i)));
-        }
+        }*/
+
+
+        resultFrame.add(panel, BorderLayout.CENTER);
+        panel.add(resultPanel, BorderLayout.CENTER);
+        JButton play = new JButton("Spela");
+        panel.add(play, BorderLayout.SOUTH);
+        resultFrame.revalidate();
+        resultFrame.repaint();
     }
 
     public void updateRound(int round, int player1Score, int player2Score, String category) {
@@ -88,8 +100,7 @@ public class ResultPanel{
 
 
     public void switchToResultPanel() {
-        CardLayout cardLayout = (CardLayout) panel.getLayout();
-        cardLayout.show(panel, "resultPanel");
+        cardLayout.show(cardPanel, "resultPanel");
     }
 
 
@@ -98,6 +109,7 @@ public class ResultPanel{
         resultFrame = new JFrame("Lobby");
         resultFrame.setSize(800, 600);
         resultFrame.setLocationRelativeTo(null);
+        resultFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         resultFrame.setVisible(true);
 
     }
@@ -105,5 +117,13 @@ public class ResultPanel{
         resultFrame.dispose();
     }
 
+    public static void main(String[] args) throws IOException {
+        GameState gameState = new GameState(6, 2); // Exempel med 6 omgångar och 2 spelare
+        ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(System.out));
+
+        // Skapa ResultPanel och visa resultat
+        ResultPanel rp = new ResultPanel(gameState, oos, 5);
+        rp.drawResult();
+    }
 
 }
