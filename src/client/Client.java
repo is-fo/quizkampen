@@ -55,6 +55,7 @@ public class Client {
                     System.out.println(gameState.getPlayerScores());
 //                    oos.writeObject(fromServer);
                     ResultPanel rp = new ResultPanel(gameState, oos, 2);
+                    rp.drawResult();
                 } else if (fromServer instanceof Waiting) {
                     oos.writeObject(fromServer);
                 } else if (fromServer instanceof EndGame) {

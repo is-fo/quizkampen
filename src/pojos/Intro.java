@@ -18,6 +18,10 @@ public class Intro implements Serializable {
         return roundsPerGame;
     }
 
+    public int getQuestionsPerRound() {
+        return questionsPerRound;
+    }
+
     public GameState getGameState() {
         return gameState;
     }
