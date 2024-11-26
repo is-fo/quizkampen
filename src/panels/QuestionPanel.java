@@ -52,7 +52,7 @@ public class QuestionPanel {
                 int finalIndex = index;
                 answerButton.addActionListener(e -> {
 
-                    handleAnswerSelection(answerButton, answer);
+                    handleAnswerSelection(answerButton, answerButton.getText(), finalIndex);
                     System.out.println(getAnswers());
 
                     Timer timer = new Timer(1000, e2 -> {
@@ -83,7 +83,7 @@ public class QuestionPanel {
         showQuestionFrame();
     }
 
-    private void handleAnswerSelection(JButton button, String selectedAnswer) {
+    private void handleAnswerSelection(JButton button, String selectedAnswer, int index) {
 
         boolean isCorrect = selectedAnswer.equals(questions.get(index).getCorrectAnswer());
 
