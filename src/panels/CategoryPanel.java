@@ -8,8 +8,6 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Timer;
 
-
-//TODO Katogori knappar storlek
 public class CategoryPanel {
 
     private List<String> categories;
