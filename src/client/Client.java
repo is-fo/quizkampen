@@ -2,6 +2,7 @@ package client;
 
 import panels.CategoryPanel;
 import panels.QuestionPanel;
+import panels.ResultPanel;
 import pojos.EndGame;
 import pojos.Intro;
 import pojos.Question;
@@ -32,9 +33,11 @@ public class Client {
             while (true) {
                 Object fromServer = ois.readObject();
 
-                if (fromServer instanceof Intro) {
-
-                    oos.writeObject(fromServer);
+                if (fromServer instanceof Intro i) {
+                    System.out.println(i.getGameState());
+                    ResultPanel rp = new ResultPanel(i.getGameState(), oos, 2);
+                    rp.drawResult();
+//                    oos.writeObject(fromServer);
                 } else if (fromServer instanceof String) {
                     System.out.println(fromServer + "<- category received");
                     oos.writeObject("Sport");
@@ -50,7 +53,8 @@ public class Client {
                     }
                 } else if (fromServer instanceof GameState gameState) {
                     System.out.println(gameState.getPlayerScores());
-                    oos.writeObject(fromServer);
+//                    oos.writeObject(fromServer);
+                    ResultPanel rp = new ResultPanel(gameState, oos, 2);
                 } else if (fromServer instanceof Waiting) {
                     oos.writeObject(fromServer);
                 } else if (fromServer instanceof EndGame) {

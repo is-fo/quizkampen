@@ -42,7 +42,7 @@ public class GameLogic implements Runnable {
 
         for (int i = 0; i < MAX_CLIENTS; i++) {
             try {
-                out[i].writeObject(new Intro(2, 2));
+                out[i].writeObject(new Intro(2, 2, gameState));
             } catch (IOException e) {
                 System.err.println("Error intro: " + e.getMessage());
             }

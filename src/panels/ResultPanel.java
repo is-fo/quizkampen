@@ -12,9 +12,8 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO Koppla GameState till ResultPanel
+public class ResultPanel {
 
-public class ResultPanel{
     private List<JLabel> player1Scores = new ArrayList<>();
     private List<JLabel> categories = new ArrayList<>();
     private List<JLabel> player2Scores = new ArrayList<>();
@@ -26,7 +25,6 @@ public class ResultPanel{
     private int currentRound;
     private int roundsPerGame;
     private ObjectOutputStream oos;
-
 
     public ResultPanel(GameState gameState, ObjectOutputStream oos, int roundsPerGame) {
         this.gameState = gameState;
@@ -98,27 +96,15 @@ public class ResultPanel{
         player2Scores.get(round - 1).setText(String.valueOf(player2Score));
     }
 
-    /*public void reset() {
-        for (int i = 0; i < player1Scores.size(); i++) {
-            player1Scores.get(i).setText("");
-            categories.get(i).setText("");
-            player2Scores.get(i).setText("");
-        }
-    } Tog bort denna och lägger till updateFinalResults och resetGame??
-*/
-
     public void updateResults() {
         player1Scores.add(new JLabel(String.valueOf(gameState.getScore(0)), SwingConstants.CENTER));
         player2Scores.add(new JLabel(String.valueOf(gameState.getScore(1)), SwingConstants.CENTER));
         categories.add(new JLabel(String.valueOf(gameState.getCategories())));
     }
 
-
-
     public void switchToResultPanel() {
         cardLayout.show(cardPanel, "resultPanel");
     }
-
 
     private void createResultFrame() {
 
@@ -131,15 +117,6 @@ public class ResultPanel{
     }
     private void closeresultFrame() {
         resultFrame.dispose();
-    }
-
-    public static void main(String[] args) throws IOException {
-        GameState gameState = new GameState(6, 2); // Exempel med 6 omgångar och 2 spelare
-        ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(System.out));
-
-        // Skapa ResultPanel och visa resultat
-        ResultPanel rp = new ResultPanel(gameState, oos, 5);
-        rp.drawResult();
     }
 
 }
