@@ -1,6 +1,7 @@
 package client;
 
 import panels.CategoryPanel;
+import panels.QuestionPanel;
 import pojos.EndGame;
 import pojos.Intro;
 import pojos.Question;
@@ -20,7 +21,7 @@ public class Client {
     private int roundsPerGame;
 
     Client() {
-        String hostName = "192.168.0.35";
+        String hostName = "192.168.0.30";
         int portNumber = 55555;
 
         try (
@@ -43,6 +44,10 @@ public class Client {
                         List<String> answers = new ArrayList<>();
                         answers.add(q.getCorrectAnswer());
                         oos.writeObject(answers);
+                        Question question = (Question) receivedList.get(0);
+                        QuestionPanel qp = new QuestionPanel(question, oos);
+                        qp.drawQuestion();
+                        qp.showQuestionFrame();
                     }
                     else if (!receivedList.isEmpty() && receivedList.getFirst() instanceof String) {
                         CategoryPanel cp = new CategoryPanel((List<String>)fromServer, oos);

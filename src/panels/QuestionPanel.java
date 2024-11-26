@@ -29,23 +29,31 @@ import java.util.List;
 
     public void drawQuestion() {
         //TODO en label med frågar
-        JLabel questionLabel = new JLabel(question.getQuestion());
-        questionLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel = new JPanel(new BorderLayout(10, 10));
+        JPanel questionPanel = new JPanel();
+        questionPanel.setBackground(Color.LIGHT_GRAY);
+        questionPanel.setLayout(new BorderLayout());
 
-        panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        panel.add(questionLabel);
+        JLabel questionLabel = new JLabel(question.getQuestion());
+        questionLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        questionPanel.add(questionLabel, BorderLayout.CENTER);
+
+        panel.add(questionPanel, BorderLayout.NORTH);
+
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+
 
         //TODO svarsalternativ -> returnera en String
         for (String answer : question.getAnswers()) {
             JButton answerButton = new JButton(answer);
             answerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             answerButton.addActionListener(e -> handleAnswerSelection(answerButton, answer));
-            panel.add(Box.createRigidArea(new Dimension(0, 5)));
-            panel.add(answerButton);
+            buttonPanel.add(answerButton);
+
         }
+        panel.add(buttonPanel, BorderLayout.CENTER);
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         cardPanel.add(panel, "QuestionPanel");
     }
 
@@ -60,9 +68,13 @@ import java.util.List;
             button.setBackground(Color.RED);
         }
 
-        for (Component comp : panel.getComponents()) {
-            if (comp instanceof JButton) {
-                comp.setEnabled(false);
+        for (Component component : panel.getComponents()) {
+            if (component instanceof JPanel) {
+                for (Component btn : ((JPanel) component).getComponents()) {
+                    if (btn instanceof JButton) {
+                        btn.setEnabled(false);
+                    }
+                }
             }
         }
 
@@ -86,24 +98,21 @@ import java.util.List;
             cardPanel.add(questionPanel.getCardPanel(), "QuestionPanel");
         }
 
-        private static void createQuestionFrame(JPanel cardPanel) {
-            JFrame questionFrame = new JFrame("QuizKampen");
-            questionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            questionFrame.setSize(400, 300);
-            questionFrame.setLayout(new BorderLayout());
-            questionFrame.add(cardPanel, BorderLayout.CENTER);
-            questionFrame.setResizable(true);
-            questionFrame.setVisible(true);
-        }
+    public void showQuestionFrame() {
+        JFrame questionFrame = new JFrame("QuizKampen");
+        questionFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        questionFrame.setSize(800, 600);
+        questionFrame.add(this.getCardPanel());
+        questionFrame.setLocationRelativeTo(null);
+        questionFrame.setVisible(true);
+    }
 
         public static void main (String[]args){
             List<String> answers = List.of("Blå", "Gul", "Vit", "Svart");
             Question question = new Question("Vilken färg har himlen?", answers, "Blå");
-            QuestionPanel questionPanel = new QuestionPanel(question,null);
+            QuestionPanel questionPanel = new QuestionPanel(question, null);
             questionPanel.drawQuestion();
-            JPanel cardPanel = new JPanel(new CardLayout());
-            addQuestionViews(cardPanel, questionPanel);
-            createQuestionFrame(cardPanel);
+            questionPanel.showQuestionFrame();
         }
-    }
+}
 
