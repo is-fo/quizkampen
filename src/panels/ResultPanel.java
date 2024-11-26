@@ -1,50 +1,92 @@
 package panels;
-/*
+import pojos.Connected;
 import pojos.GameState;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 //TODO Koppla GameState till ResultPanel
-public class ResultPanel extends JPanel {
-    private static final int TOTAL_ROUNDS = 6; //TODO värd att ha? Se updateFinalResults()
-    private final List<JLabel> player1Scores = new ArrayList<>();
-    private final List<JLabel> categories = new ArrayList<>();
-    private final List<JLabel> player2Scores = new ArrayList<>();
-    private JButton playAgainButton;
+
+public class ResultPanel{
+    private List<JLabel> player1Scores = new ArrayList<>();
+    private List<JLabel> categories = new ArrayList<>();
+    private List<JLabel> player2Scores = new ArrayList<>();
     private GameState gameState;
-    private JPanel mainPanel;
+    private CardLayout cardLayout;
+    private JPanel panel;
+    private JPanel cardPanel;
+    private JFrame resultFrame;
+    private int currentRound;
+    private int roundsPerGame;
+    private ObjectOutputStream oos;
 
-    public ResultPanel(String player1Name, String player2Name, int roundsPerGame, GameState gameState, JPanel mainPanel) {
+
+    public ResultPanel(GameState gameState, ObjectOutputStream oos, int roundsPerGame) {
         this.gameState = gameState;
-        this.mainPanel = mainPanel;
-        setLayout(new BorderLayout());
+        this.cardPanel = new JPanel();
+        this.cardLayout = new CardLayout();
+        this.roundsPerGame = roundsPerGame;
+        this.oos = oos;
+        cardPanel.setLayout(cardLayout);
 
+    }
+
+    public void drawResult() {
+        createResultFrame();
+        panel = new JPanel(new BorderLayout(10, 10));
         JPanel resultPanel = new JPanel(new GridLayout(roundsPerGame + 1, 3, 5, 5));
-        resultPanel.add(new JLabel(player1Name, SwingConstants.CENTER));
+        resultPanel.add(new JLabel("player1", SwingConstants.CENTER));
         resultPanel.add(new JLabel("Kategori", SwingConstants.CENTER));
-        resultPanel.add(new JLabel(player2Name, SwingConstants.CENTER));
+        resultPanel.add(new JLabel("player2", SwingConstants.CENTER));
 
         for (int i = 0; i < roundsPerGame; i++) {
-            JLabel player1Label = new JLabel("", SwingConstants.CENTER);
-            JLabel categoryLabel = new JLabel("", SwingConstants.CENTER);
-            JLabel player2Label = new JLabel("", SwingConstants.CENTER);
+            JLabel player1ScoreLabel = new JLabel("sp1", SwingConstants.CENTER);
+            JLabel categoryLabel = new JLabel("kat", SwingConstants.CENTER);
+            JLabel player2ScoreLabel = new JLabel("sp2", SwingConstants.CENTER);
 
-            player1Scores.add(player1Label);
+            player1Scores.add(player1ScoreLabel);
             categories.add(categoryLabel);
-            player2Scores.add(player2Label);
+            player2Scores.add(player2ScoreLabel);
 
-            resultPanel.add(player1Label);
+            resultPanel.add(player1ScoreLabel);
             resultPanel.add(categoryLabel);
-            resultPanel.add(player2Label);
+            resultPanel.add(player2ScoreLabel);
+
         }
 
-        playAgainButton = new JButton("Spela igen");
-        playAgainButton.addActionListener(e -> resetGame());//Fixas eller tänker jag helt fel???
-        add(resultPanel, BorderLayout.CENTER);
-        add(playAgainButton, BorderLayout.SOUTH);
+        for (int i = 0; i < roundsPerGame; i++) {
+            player1Scores.get(i).setText(String.valueOf(gameState.getPlayerScores().get(0).getScoreForRound(i)));
+            categories.get(i).setText(String.valueOf(gameState.getCategory(i)));
+            player2Scores.get(i).setText(String.valueOf(gameState.getPlayerScores().get(1).getScoreForRound(i)));
+        }
+
+        resultFrame.add(panel, BorderLayout.CENTER);
+        panel.add(resultPanel, BorderLayout.CENTER);
+        JButton playButton = new JButton("Spela");
+        panel.add(playButton, BorderLayout.SOUTH);
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Spela klickad");
+                try {
+                    oos.writeObject(new Connected());
+                    oos.flush();
+                    closeresultFrame();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(panel, "Fel vid kommunikation med servern.");
+                }
+            }
+        });
+        resultFrame.revalidate();
+        resultFrame.repaint();
     }
 
     public void updateRound(int round, int player1Score, int player2Score, String category) {
@@ -64,64 +106,40 @@ public class ResultPanel extends JPanel {
         }
     } Tog bort denna och lägger till updateFinalResults och resetGame??
 */
-/*
-    public void updateFinalResults() {
-        for (int round = 0; round < TOTAL_ROUNDS; round++) {
-            updateRound(round + 1,
-                    gameState.getScore(0, round),
-                    gameState.getScore(1, round),
-                    gameState.getCategoryForRound(round));////Fixas eller tänker jag helt fel???
-        }
+
+    public void updateResults() {
+        player1Scores.add(new JLabel(String.valueOf(gameState.getScore(0)), SwingConstants.CENTER));
+        player2Scores.add(new JLabel(String.valueOf(gameState.getScore(1)), SwingConstants.CENTER));
+        categories.add(new JLabel(String.valueOf(gameState.getCategories())));
     }
 
-    public void resetGame() {
-        for (int i = 0; i < TOTAL_ROUNDS; i++) {
-            player1Scores.get(i).setText("");
-            categories.get(i).setText("");
-            player2Scores.get(i).setText("");
-        }
-        gameState.resetGame();//Fixas eller tänker jag helt fel???
-        CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
-        cardLayout.show(mainPanel, "categoryPanel");
-    }
 
-   /* public void updateFinalResults(int roundsPlayed, int[] player1ScoresArray, int[] player2ScoresArray, String[] categoriesArray) {
-        for (int round = 0; round < roundsPlayed; round++) {
-            updateRound(round + 1, player1ScoresArray[round], player2ScoresArray[round], categoriesArray[round]);
-        }
-    }*/
-/*
-   public JButton getPlayAgainButton() {
-       return playAgainButton; //Få in den när speler är slut?
-   }
 
     public void switchToResultPanel() {
-        CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
-        cardLayout.show(mainPanel, "resultPanel");
+        cardLayout.show(cardPanel, "resultPanel");
     }
-}
-
-        private void showResultPanel(String player1Name, String player2Name, int roundsPerGame, GameState gameState){
-
-            JFrame rp = new JFrame("QuizKampen Lobby");
-            rp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-            JPanel mainPanel = new JPanel(new CardLayout());
-            ResultPanel resultPanel = new ResultPanel(player1Name, player2Name, roundsPerGame, gameState, mainPanel);
-
-            mainPanel.add(resultPanel, "Lobby");
-            rp.add(mainPanel);
-            rp.setSize(800, 600);
-            rp.setLocationRelativeTo(null);
-            rp.setVisible(true);
-
-            return rp;
-        }
 
 
-        public static void main(String[] args) {
-        showResultPanel("Spelare 1", "Spelare 2");
+    private void createResultFrame() {
+
+        resultFrame = new JFrame("Lobby");
+        resultFrame.setSize(800, 600);
+        resultFrame.setLocationRelativeTo(null);
+        resultFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        resultFrame.setVisible(true);
+
     }
-}
+    private void closeresultFrame() {
+        resultFrame.dispose();
+    }
 
-*/
+    public static void main(String[] args) throws IOException {
+        GameState gameState = new GameState(6, 2); // Exempel med 6 omgångar och 2 spelare
+        ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(System.out));
+
+        // Skapa ResultPanel och visa resultat
+        ResultPanel rp = new ResultPanel(gameState, oos, 5);
+        rp.drawResult();
+    }
+
+}

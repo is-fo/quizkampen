@@ -33,6 +33,7 @@ public class Client {
                 Object fromServer = ois.readObject();
 
                 if (fromServer instanceof Intro) {
+
                     oos.writeObject(fromServer);
                 } else if (fromServer instanceof String) {
                     System.out.println(fromServer + "<- category received");
