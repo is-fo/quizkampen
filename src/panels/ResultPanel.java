@@ -1,8 +1,11 @@
 package panels;
+import pojos.Connected;
 import pojos.GameState;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -58,17 +61,30 @@ public class ResultPanel{
 
         }
 
-       /* for (int i = 0; i < roundsPerGame; i++) {
+        for (int i = 0; i < roundsPerGame; i++) {
             player1Scores.get(i).setText(String.valueOf(gameState.getPlayerScores().get(0).getScoreForRound(i)));
             categories.get(i).setText(String.valueOf(gameState.getCategory(i)));
             player2Scores.get(i).setText(String.valueOf(gameState.getPlayerScores().get(1).getScoreForRound(i)));
-        }*/
-
+        }
 
         resultFrame.add(panel, BorderLayout.CENTER);
         panel.add(resultPanel, BorderLayout.CENTER);
-        JButton play = new JButton("Spela");
-        panel.add(play, BorderLayout.SOUTH);
+        JButton playButton = new JButton("Spela");
+        panel.add(playButton, BorderLayout.SOUTH);
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Spela klickad");
+                try {
+                    oos.writeObject(new Connected());
+                    oos.flush();
+                    closeresultFrame();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(panel, "Fel vid kommunikation med servern.");
+                }
+            }
+        });
         resultFrame.revalidate();
         resultFrame.repaint();
     }
