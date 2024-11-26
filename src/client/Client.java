@@ -20,7 +20,7 @@ public class Client {
     private int roundsPerGame;
 
     Client() {
-        String hostName = "192.168.0.35";
+        String hostName = "172.20.205.138";
         int portNumber = 55555;
 
         try (
@@ -45,8 +45,11 @@ public class Client {
                         oos.writeObject(answers);
                     }
                     else if (!receivedList.isEmpty() && receivedList.getFirst() instanceof String) {
+
                         CategoryPanel cp = new CategoryPanel((List<String>)fromServer, oos);
                         cp.drawCategories();
+
+
                     }
                 } else if (fromServer instanceof GameState gameState) {
                     System.out.println(gameState.getPlayerScores());
