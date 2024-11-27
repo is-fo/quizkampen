@@ -85,10 +85,10 @@ public class ResultPanel {
 
     public void updateWindow (List<Score> scores) {
         for (int i = 0; i < scores.get(0).getScores().size(); i++) { //spelare 1
-            player1Scores.get(i).setText(String.valueOf(scores.get(i).getScoreForRound(i)));
+            player1Scores.get(i).setText(String.valueOf(scores.get(0).getScores().get(i)));
         }
         for (int i = 0; i < scores.get(1).getScores().size(); i++) { //spelare 2
-            player2Scores.get(i).setText(String.valueOf(scores.get(i).getScoreForRound(i)));
+            player2Scores.get(i).setText(String.valueOf(scores.get(1).getScores().get(i)));
         }
 
         resultFrame.repaint();

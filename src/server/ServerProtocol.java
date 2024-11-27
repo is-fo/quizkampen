@@ -48,17 +48,20 @@ public class ServerProtocol {
             state = PLAY_ROUND;
         } else if (state == PLAY_ROUND) {
             System.out.println("STATE == PLAY_ROUND: " + player);
+            List<Score> currentScore;
             if (input instanceof List l) {
                 int score = intro.getGameState().calculateScore(l, questions);
                 intro.getGameState().addPlayerScore(score, player);
+                currentScore = intro.getGameState().getPlayerScores();
             } else {
                 System.err.println(input.getClass().getSimpleName());
                 throw new RuntimeException("Not a list");
             }
+            synchronized (intro.getGameState()) {
+                output = intro.getGameState();
+            }
 
-
-            output = intro.getGameState();
-
+            System.out.println(intro.getGameState() + "<--- lbalblabllalabllalabl");
             System.out.println(intro.getGameState().getScoreForPlayer(player));
             state = SHOW_RESULTS;
         } else if (state == SHOW_RESULTS) {

@@ -6,8 +6,8 @@ import java.util.List;
 
 public class GameState implements Serializable {
 
-    private final List<Score> playerScores = new ArrayList<>();
-    private final List<String> categories = new ArrayList<>();
+    private List<Score> playerScores = new ArrayList<>();
+    private List<String> categories = new ArrayList<>();
 
     private int currentRound = 0;
 
@@ -15,8 +15,11 @@ public class GameState implements Serializable {
 
         for (int i = 0; i < 2; i++) {
             playerScores.add(new Score());
-            System.out.println(playerScores + " <-- gamestate init");
         }
+    }
+
+    public GameState(List<Score> playerScores) {
+        this.playerScores = playerScores;
     }
 
     public void addCategory(String category) {
@@ -68,11 +71,16 @@ public class GameState implements Serializable {
 
     public List<Score> getPlayerScores() {
         System.out.println(playerScores + "<----- getPlayerScores()");
-        return new ArrayList<>(playerScores);
+        return playerScores;
     }
 
     public GameState getGamestate() {
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return playerScores.toString();
     }
 
 }

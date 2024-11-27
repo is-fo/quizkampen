@@ -60,6 +60,7 @@ public class GameLogic implements Runnable {
                     processed = protocol.processInput(o, currentClient, intro);
                     out[currentClient].writeObject(processed);
                     System.out.println("Sent:  " + processed + " to client: " + (currentClient));
+                    out[currentClient].reset();
                     if (processed instanceof GameState) {
                         currentClient = (currentClient + 1) % MAX_CLIENTS; //nextClient()
                     }

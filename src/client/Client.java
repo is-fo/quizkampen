@@ -52,7 +52,11 @@ public class Client {
                         CategoryPanel cp = new CategoryPanel((List<String>)fromServer, oos);
                         cp.drawCategories();
                     }
-                } else if (fromServer instanceof GameState g) {
+                } else if (fromServer instanceof GameState) {
+
+                    GameState g = (GameState) fromServer;
+                    System.out.println(g + "<--- gamestate received");
+                    System.out.println(g.getPlayerScores() + " z. .fsad.fsdaf");
                     resultPanel.updateWindow(g.getPlayerScores());
 
                 } else if (fromServer instanceof Waiting) {
