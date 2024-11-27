@@ -22,7 +22,7 @@ public class Client {
 
     @SuppressWarnings("unchecked")
     Client() {
-        String hostName = "192.168.0.35";
+        String hostName = "localhost";
         int portNumber = 55555;
 
         try (
@@ -50,7 +50,7 @@ public class Client {
                     }
                     } else if (fromServer instanceof GameState g) {
                         assert resultPanel != null;
-                        resultPanel.updateWindow(g.getPlayerScores());
+                        resultPanel.updateWindow(g.getPlayerScores(), g.getCategories());
                     } else if (fromServer instanceof Waiting) {
                         resultPanel.disablePlayButton();
                         oos.writeObject(fromServer);
@@ -58,7 +58,7 @@ public class Client {
                         oos.close();
                         ois.close();
                         addressSocket.close();
-                        resultPanel.updateWindow(eg.getGameState().getPlayerScores());
+                        resultPanel.updateWindow(eg.getGameState().getPlayerScores(), eg.getGameState().getCategories());
                         resultPanel.disablePlayButton();
                     break;
 

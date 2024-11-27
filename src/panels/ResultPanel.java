@@ -11,11 +11,14 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.swing.SwingConstants.*;
+
 public class ResultPanel {
 
     private List<JLabel> player1Scores = new ArrayList<>();
     private List<JLabel> categories = new ArrayList<>();
     private List<JLabel> player2Scores = new ArrayList<>();
+    private JLabel scoreKeeping = new JLabel("0 - 0", CENTER);
     private GameState gameState;
     private CardLayout cardLayout;
     private JPanel panel;
@@ -40,17 +43,17 @@ public class ResultPanel {
         createResultFrame();
 
         JPanel titlePanel = new JPanel();
-        titlePanel.add(new JLabel("Spelare1", SwingConstants.CENTER));
-        titlePanel.add(new JLabel("0 - 0", SwingConstants.CENTER));
-        titlePanel.add(new JLabel("Spelare2", SwingConstants.CENTER));
+        titlePanel.add(new JLabel("Spelare1", CENTER));
+        titlePanel.add(scoreKeeping);
+        titlePanel.add(new JLabel("Spelare2", CENTER));
         panel.add(titlePanel, BorderLayout.NORTH);
 
 
         for (int i = 0; i < roundsPerGame; i++) {
 
-            player1Scores.add(new JLabel(" ", SwingConstants.CENTER));
-            categories.add(new JLabel(" ", SwingConstants.CENTER));
-            player2Scores.add(new JLabel(" ", SwingConstants.CENTER));
+            player1Scores.add(new JLabel(" ", CENTER));
+            categories.add(new JLabel(" ", CENTER));
+            player2Scores.add(new JLabel(" ", CENTER));
 
             resultPanel.add(player1Scores.get(i));
             resultPanel.add(categories.get(i));
@@ -81,19 +84,27 @@ public class ResultPanel {
                     hideFrame();
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    JOptionPane.showMessageDialog(panel, "Fel vid kommunikation med servern.");
+                    System.err.println("Fel vid kommunikation med servern: " + ex.getCause());
                 }
             }
         });
     }
 
-    public void updateWindow (List<Score> scores) {
+    public void updateWindow (List<Score> scores, List<String> categories) {
+        int p1score = 0;
         for (int i = 0; i < scores.get(0).getScores().size(); i++) { //spelare 1
             player1Scores.get(i).setText(String.valueOf(scores.get(0).getScores().get(i)));
+            p1score += scores.get(0).getScores().get(i);
         }
+        int p2score = 0;
         for (int i = 0; i < scores.get(1).getScores().size(); i++) { //spelare 2
             player2Scores.get(i).setText(String.valueOf(scores.get(1).getScores().get(i)));
+            p2score += scores.get(1).getScores().get(i);
         }
+        for (int i = 0; i < categories.size(); i++) {
+            this.categories.get(i).setText(categories.get(i));
+        }
+        scoreKeeping.setText(p1score + " - " + p2score);
 
         resultFrame.repaint();
         resultFrame.revalidate();
