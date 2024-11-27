@@ -195,7 +195,7 @@ public class Categories implements Serializable {
             case "History" -> HISTORY;
             case "Music" -> MUSIC;
             case "Movie" -> MOVIE;
-            default -> 0;
+            default -> -1;
         };
     }
 
