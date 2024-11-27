@@ -24,7 +24,7 @@ public class GameLogic implements Runnable {
 
     @Override
     public void run() {
-        /*
+
         Properties p = new Properties();
         try {
             p.load(new FileInputStream("src/server/Settings.properties"));
@@ -35,14 +35,15 @@ public class GameLogic implements Runnable {
         int roundsPerGame = Integer.parseInt(p.getProperty("roundsPerGame", "2"));
         int questionsPerRound = Integer.parseInt(p.getProperty("questionsPerRound", "2"));
 
-        */
-        GameState gameState = new GameState(2, 2);
+
+        GameState gameState = new GameState();
+        Intro intro = new Intro(questionsPerRound, roundsPerGame, gameState);
 
         int currentClient = 0;
 
         for (int i = 0; i < MAX_CLIENTS; i++) {
             try {
-                out[i].writeObject(new Intro(2, 2, gameState));
+                out[i].writeObject(intro);
             } catch (IOException e) {
                 System.err.println("Error intro: " + e.getMessage());
             }
@@ -56,7 +57,7 @@ public class GameLogic implements Runnable {
                 while ((o = in[currentClient].readObject()) != null) {
                     System.out.println("Received: " + o + " client: " + (currentClient));
                     Object processed;
-                    processed = protocol.processInput(o, currentClient, gameState);
+                    processed = protocol.processInput(o, currentClient, gameState, intro);
                     out[currentClient].writeObject(processed);
                     System.out.println("Sent:  " + processed + " to client: " + (currentClient));
                     if (processed instanceof GameState) {

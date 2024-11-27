@@ -20,64 +20,63 @@ public class ServerProtocol {
     private  List<Question> currentQuestions = new ArrayList<>(2);
 
     @SuppressWarnings("unchecked")
-    public synchronized Object processInput(Object input, int player, GameState gameState) {
+    public synchronized Object processInput(Object input, int player, Intro intro) {
         Object output = null;
         int currentCategory;
 
+        int CATEGORIES_TO_GENERATE = 3;
+
         if (state == WAITING) {
             System.out.println("STATE == WAITING: " + player);
-            state = (gameState.getCurrentRound() != 0 || player == 1) ? ANSWER_QUESTION : CHOOSE_CATEGORY;
-            output = (gameState.getCurrentRound() != 0 || player == 1) ? currentQuestions : new Waiting();
+            state = (intro.getGameState().getCurrentRound() != 0 || player == 1) ? ANSWER_QUESTION : CHOOSE_CATEGORY;
+            output = (intro.getGameState().getCurrentRound() != 0 || player == 1) ? currentQuestions : new Waiting();
         } else if (state == CHOOSE_CATEGORY) {
             System.out.println("STATE == CHOOSE_CATEGORY: " + player);
-            if (gameState.getCurrentRound() != 0) {
-                int score = gameState.calculateScore((List<String>)input, currentQuestions);
-                gameState.addPlayerScore(score, player);
-            }
-            output = categories.getCategoriesStringList(2);
+
+            output = categories.getCategoriesStringList(CATEGORIES_TO_GENERATE); //antal kategorival
 
             state = CATEGORY_CHOSEN;
         } else if (state == CATEGORY_CHOSEN) {
             System.out.println("STATE == CATEGORY_CHOSEN: " + player);
-            currentCategory = categories.getCategoryInt((String)input);
-            gameState.addCategory((String)input);
-            output = categories.getCategory(currentCategory);
-            currentQuestions = (List<Question>) output;
-            System.out.println(currentQuestions + "<---------------");
-            if (output != null) {
-                categories.setCurrentCategory((List<Question>) output);
-            } else System.exit(30);
-            gameState.incrementRound();
+            currentCategory = categories.getCategoryInt((String)input); //String -> int conversion
+            intro.getGameState().addCategory((String)input); //lagrar vald kategori
+
+            currentQuestions = categories.getCategory(currentCategory); //hämtar frågor från kategorin
+            output = currentQuestions;
+            categories.setCurrentCategory(currentQuestions);
+
+            intro.getGameState().incrementRound();
             state = PLAY_ROUND;
         } else if (state == PLAY_ROUND) {
             System.out.println("STATE == PLAY_ROUND: " + player);
             if (input instanceof List l) {
-                int score = gameState.calculateScore(l, currentQuestions);
-                gameState.addPlayerScore(score, player);
+                int score = intro.getGameState().calculateScore(l, currentQuestions);
+                intro.getGameState().addPlayerScore(score, player);
             } else {
                 System.err.println(input.getClass().getSimpleName());
                 throw new RuntimeException("Not a list");
             }
 
-            output = gameState;
+            output = intro.getGameState();
             state = SHOW_RESULTS;
         } else if (state == SHOW_RESULTS) {
             System.out.println("STATE == SHOW_RESULTS: " + player);
-            if (gameState.getCurrentRound() > 6) { //TODO maxrounds från Settings.properties
+            if (intro.getGameState().getCurrentRound() > intro.getRoundsPerGame()) {
                 return new EndGame();
+            } else {
+                output = new Waiting();
+                state = WAITING;
             }
-            output = new Waiting();
-            state = WAITING;
         } else if (state == ANSWER_QUESTION) { //input == svar
             System.out.println("ANSWER_QUESTION: " + player);
             if (input instanceof List l) {
-                int score = gameState.calculateScore(l, currentQuestions);
-                gameState.addPlayerScore(score, player);
+                int score = intro.getGameState().calculateScore(l, currentQuestions);
+                intro.getGameState().addPlayerScore(score, player);
             } else {
                 System.err.println(input.getClass().getSimpleName());
                 throw new RuntimeException("Not a list");
             }
-            output = categories.getCategoriesStringList(2);
+            output = categories.getCategoriesStringList(CATEGORIES_TO_GENERATE);
             state = CATEGORY_CHOSEN;
         }
 
