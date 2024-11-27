@@ -8,13 +8,11 @@ import pojos.Intro;
 import pojos.Question;
 import pojos.Waiting;
 import pojos.GameState;
-import pojos.Score;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,6 +20,7 @@ public class Client {
 
     private int roundsPerGame;
 
+    @SuppressWarnings("unchecked")
     Client() {
         String hostName = "192.168.0.35";
         int portNumber = 55555;
@@ -39,12 +38,8 @@ public class Client {
                     System.out.println(i.getGameState());
                     resultPanel = new ResultPanel(i.getGameState(), oos, i.getRoundsPerGame());
                     resultPanel.createWindow();
-                } else if (fromServer instanceof String) {
-                    System.out.println(fromServer + "<- category received");
-                    oos.writeObject("Sport");
-                } else if (fromServer instanceof List<?>) {
-                    List<?> receivedList = (List<?>) fromServer;
-                    if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question q) {
+                } else if (fromServer instanceof List<?> receivedList) {
+                    if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question) {
                         QuestionPanel qp = new QuestionPanel((List<Question>) receivedList, oos);
                         qp.drawAll();
                     }
@@ -52,13 +47,9 @@ public class Client {
                         CategoryPanel cp = new CategoryPanel((List<String>)fromServer, oos);
                         cp.drawCategories();
                     }
-                } else if (fromServer instanceof GameState) {
-
-                    GameState g = (GameState) fromServer;
-                    System.out.println(g + "<--- gamestate received");
-                    System.out.println(g.getPlayerScores() + " z. .fsad.fsdaf");
+                } else if (fromServer instanceof GameState g) {
+                    assert resultPanel != null;
                     resultPanel.updateWindow(g.getPlayerScores());
-
                 } else if (fromServer instanceof Waiting) {
                     oos.writeObject(fromServer);
                 } else if (fromServer instanceof EndGame) {
