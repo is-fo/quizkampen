@@ -22,8 +22,6 @@ public class ResultPanel {
     private final List<JLabel> categories = new ArrayList<>();
     private final List<JLabel> player2Scores = new ArrayList<>();
     private final JLabel scoreKeeping = new JLabel("0 - 0", CENTER);
-    private final GameState gameState;
-    private final CardLayout cardLayout;
     private final JPanel panel;
     private final JPanel resultPanel;
     private JFrame resultFrame;
@@ -31,8 +29,6 @@ public class ResultPanel {
     private final ObjectOutputStream oos;
 
     public ResultPanel(GameState gameState, ObjectOutputStream oos, int roundsPerGame) {
-        this.gameState = gameState;
-        this.cardLayout = new CardLayout();
         this.roundsPerGame = roundsPerGame;
         this.oos = oos;
         this.panel = new JPanel(new BorderLayout());
