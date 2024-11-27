@@ -54,12 +54,14 @@ public class Client {
                     } else if (fromServer instanceof Waiting) {
                         resultPanel.disablePlayButton();
                         oos.writeObject(fromServer);
-                    } else if (fromServer instanceof EndGame) {
-                        resultPanel.disablePlayButton();
+                    } else if (fromServer instanceof EndGame eg) {
                         oos.close();
                         ois.close();
                         addressSocket.close();
-                        break;
+                        resultPanel.updateWindow(eg.getGameState().getPlayerScores());
+                        resultPanel.disablePlayButton();
+                    break;
+
                     }
                     oos.flush();
                 }

@@ -69,7 +69,7 @@ public class ResultPanel {
     public void createButton() {
 
         playButton = new JButton("Spela");
-        playButton.setEnabled(false);
+        playButton.setEnabled(true);
         panel.add(playButton, BorderLayout.SOUTH);
         playButton.addActionListener(new ActionListener() {
             @Override
