@@ -56,7 +56,10 @@ public class ServerProtocol {
                 throw new RuntimeException("Not a list");
             }
 
+
             output = intro.getGameState();
+
+            System.out.println(intro.getGameState().getScoreForPlayer(player));
             state = SHOW_RESULTS;
         } else if (state == SHOW_RESULTS) {
             System.out.println("STATE == SHOW_RESULTS: " + player);

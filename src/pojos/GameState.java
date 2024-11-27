@@ -15,6 +15,7 @@ public class GameState implements Serializable {
 
         for (int i = 0; i < 2; i++) {
             playerScores.add(new Score());
+            System.out.println(playerScores + " <-- gamestate init");
         }
     }
 
@@ -46,6 +47,7 @@ public class GameState implements Serializable {
 
     public void addPlayerScore(int score, int player) {
         playerScores.get(player).addScore(score);
+        System.out.println(playerScores + " <---- addPlayerScore()");
     }
 
     public void incrementRound() {
@@ -65,7 +67,8 @@ public class GameState implements Serializable {
     }
 
     public List<Score> getPlayerScores() {
-        return playerScores;
+        System.out.println(playerScores + "<----- getPlayerScores()");
+        return new ArrayList<>(playerScores);
     }
 
     public GameState getGamestate() {

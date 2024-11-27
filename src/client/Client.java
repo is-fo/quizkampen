@@ -8,6 +8,7 @@ import pojos.Intro;
 import pojos.Question;
 import pojos.Waiting;
 import pojos.GameState;
+import pojos.Score;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -30,14 +31,14 @@ public class Client {
             ObjectOutputStream oos = new ObjectOutputStream(addressSocket.getOutputStream());
             ObjectInputStream ois = new ObjectInputStream(addressSocket.getInputStream())
         ) {
+            ResultPanel resultPanel = null;
             while (true) {
                 Object fromServer = ois.readObject();
 
                 if (fromServer instanceof Intro i) {
                     System.out.println(i.getGameState());
-                    ResultPanel rp = new ResultPanel(i.getGameState(), oos, 2);
-                    rp.drawResult();
-//                    oos.writeObject(fromServer);
+                    resultPanel = new ResultPanel(i.getGameState(), oos, i.getRoundsPerGame());
+                    resultPanel.createWindow();
                 } else if (fromServer instanceof String) {
                     System.out.println(fromServer + "<- category received");
                     oos.writeObject("Sport");
@@ -51,13 +52,9 @@ public class Client {
                         CategoryPanel cp = new CategoryPanel((List<String>)fromServer, oos);
                         cp.drawCategories();
                     }
-                } else if (fromServer instanceof GameState gameState) {
-                    System.out.println(gameState.getPlayerScores());
-//                    oos.writeObject(fromServer);
-                    ResultPanel rp = new ResultPanel(gameState, oos, 2);
-                    rp.drawResult();
-                    rp.updateResults();
-                    rp.updateRound();
+                } else if (fromServer instanceof GameState g) {
+                    resultPanel.updateWindow(g.getPlayerScores());
+
                 } else if (fromServer instanceof Waiting) {
                     oos.writeObject(fromServer);
                 } else if (fromServer instanceof EndGame) {

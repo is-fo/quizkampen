@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Question implements Serializable {
     private String question;
-    private List<String> answers = new ArrayList<String>();
+    private List<String> answers;
     private String correctAnswer;
 
     public Question(String question,List<String> answers, String correctAnswer) {

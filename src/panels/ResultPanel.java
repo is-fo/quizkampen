@@ -1,6 +1,7 @@
 package panels;
 import pojos.Connected;
 import pojos.GameState;
+import pojos.Score;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +19,7 @@ public class ResultPanel {
     private GameState gameState;
     private CardLayout cardLayout;
     private JPanel panel;
-    private JPanel cardPanel;
+    private JPanel resultPanel;
     private JFrame resultFrame;
 
     private int roundsPerGame;
@@ -26,39 +27,44 @@ public class ResultPanel {
 
     public ResultPanel(GameState gameState, ObjectOutputStream oos, int roundsPerGame) {
         this.gameState = gameState;
-        this.cardPanel = new JPanel();
         this.cardLayout = new CardLayout();
         this.roundsPerGame = roundsPerGame;
         this.oos = oos;
-        cardPanel.setLayout(cardLayout);
+        this.panel = new JPanel(new BorderLayout());
+        this.resultPanel = new JPanel(new GridLayout(roundsPerGame, 3));
 
     }
 
-    public void drawResult() {
+    public void createWindow() {
         createResultFrame();
-        panel = new JPanel(new BorderLayout(10, 10));
-        JPanel resultPanel = new JPanel(new GridLayout(roundsPerGame + 1, 3, 5, 5));
-        resultPanel.add(new JLabel("Spelare1", SwingConstants.CENTER));
-        resultPanel.add(new JLabel("Kategori", SwingConstants.CENTER));
-        resultPanel.add(new JLabel("Spelare2", SwingConstants.CENTER));
+
+        JPanel titlePanel = new JPanel();
+        titlePanel.add(new JLabel("Spelare1", SwingConstants.CENTER));
+        titlePanel.add(new JLabel("0 - 0", SwingConstants.CENTER));
+        titlePanel.add(new JLabel("Spelare2", SwingConstants.CENTER));
+        panel.add(titlePanel, BorderLayout.NORTH);
+
 
         for (int i = 0; i < roundsPerGame; i++) {
-            JLabel player1ScoreLabel = new JLabel("", SwingConstants.CENTER);
-            JLabel categoryLabel = new JLabel("", SwingConstants.CENTER);
-            JLabel player2ScoreLabel = new JLabel("", SwingConstants.CENTER);
 
-            player1Scores.add(player1ScoreLabel);
-            categories.add(categoryLabel);
-            player2Scores.add(player2ScoreLabel);
+            player1Scores.add(new JLabel(" ", SwingConstants.CENTER));
+            categories.add(new JLabel(" ", SwingConstants.CENTER));
+            player2Scores.add(new JLabel(" ", SwingConstants.CENTER));
 
-            resultPanel.add(player1ScoreLabel);
-            resultPanel.add(categoryLabel);
-            resultPanel.add(player2ScoreLabel);
-
+            resultPanel.add(player1Scores.get(i));
+            resultPanel.add(categories.get(i));
+            resultPanel.add(player2Scores.get(i));
         }
-
-        resultFrame.add(panel, BorderLayout.CENTER);
         panel.add(resultPanel, BorderLayout.CENTER);
+
+        createButton();
+
+        panel.setVisible(true);
+        resultFrame.add(panel);
+    }
+
+    public void createButton() {
+
         JButton playButton = new JButton("Spela");
         panel.add(playButton, BorderLayout.SOUTH);
         playButton.addActionListener(new ActionListener() {
@@ -68,50 +74,48 @@ public class ResultPanel {
                 try {
                     oos.writeObject(new Connected());
                     oos.flush();
-                    closeresultFrame();
+                    hideFrame();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(panel, "Fel vid kommunikation med servern.");
                 }
             }
         });
-        resultFrame.revalidate();
+    }
+
+    public void updateWindow (List<Score> scores) {
+        for (int i = 0; i < scores.get(0).getScores().size(); i++) { //spelare 1
+            player1Scores.get(i).setText(String.valueOf(scores.get(i).getScoreForRound(i)));
+        }
+        for (int i = 0; i < scores.get(1).getScores().size(); i++) { //spelare 2
+            player2Scores.get(i).setText(String.valueOf(scores.get(i).getScoreForRound(i)));
+        }
+
         resultFrame.repaint();
+        resultFrame.revalidate();
+        showFrame();
     }
 
-    public void updateRound() {
-        for (int i = 0; i < roundsPerGame; i++) {
-            if (gameState.getCurrentRound() > 0) {
-                player1Scores.get(i).setText(String.valueOf(gameState.getPlayerScores().get(0).getScoreForRound(i)));
-                categories.get(i).setText(String.valueOf(gameState.getCategory(i)));
-                player2Scores.get(i).setText(String.valueOf(gameState.getPlayerScores().get(1).getScoreForRound(i)));
-            }
-        }
-    }
-
-    public void updateResults() {
-        if (gameState.getCurrentRound() > 0) {
-            player1Scores.add(new JLabel(String.valueOf(gameState.getScoreForRound(0)), SwingConstants.CENTER));
-            player2Scores.add(new JLabel(String.valueOf(gameState.getScoreForRound(1)), SwingConstants.CENTER));
-            categories.add(new JLabel(String.valueOf(gameState.getCategories())));
-        }
-    }
-
-    public void switchToResultPanel() {
-        cardLayout.show(cardPanel, "resultPanel");
-    }
 
     private void createResultFrame() {
-
         resultFrame = new JFrame("Lobby");
-        resultFrame.setSize(800, 600);
+        resultFrame.setSize(800, 700);
         resultFrame.setLocationRelativeTo(null);
         resultFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         resultFrame.setVisible(true);
 
     }
-    private void closeresultFrame() {
-        resultFrame.dispose();
+    private void hideFrame() {
+        resultFrame.setVisible(false);
+    }
+
+    private void showFrame() {
+        resultFrame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        ResultPanel rp = new ResultPanel(null, null, 6);
+        rp.createWindow();
     }
 
 }
