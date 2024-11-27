@@ -2,7 +2,6 @@ package server;
 
 import pojos.*;
 
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class ServerProtocol {
 
     private int state = WAITING;
     private Categories categories = new Categories();
-    private  List<Question> currentQuestions = new ArrayList<>(2);
+    private  List<Question> questions = new ArrayList<>(2);
 
     @SuppressWarnings("unchecked")
     public synchronized Object processInput(Object input, int player, Intro intro) {
@@ -29,7 +28,7 @@ public class ServerProtocol {
         if (state == WAITING) {
             System.out.println("STATE == WAITING: " + player);
             state = (intro.getGameState().getCurrentRound() != 0 || player == 1) ? ANSWER_QUESTION : CHOOSE_CATEGORY;
-            output = (intro.getGameState().getCurrentRound() != 0 || player == 1) ? currentQuestions : new Waiting();
+            output = (intro.getGameState().getCurrentRound() != 0 || player == 1) ? questions : new Waiting();
         } else if (state == CHOOSE_CATEGORY) {
             System.out.println("STATE == CHOOSE_CATEGORY: " + player);
 
@@ -41,16 +40,16 @@ public class ServerProtocol {
             currentCategory = categories.getCategoryInt((String)input); //String -> int conversion
             intro.getGameState().addCategory((String)input); //lagrar vald kategori
 
-            currentQuestions = categories.getCategory(currentCategory); //hämtar frågor från kategorin
-            output = currentQuestions;
-            categories.setCurrentCategory(currentQuestions);
+            questions = categories.getNQuestions(intro.getQuestionsPerRound(), currentCategory); //hämtar frågor från kategorin
+            output = questions;
+            categories.setCurrentCategory(questions);
 
             intro.getGameState().incrementRound();
             state = PLAY_ROUND;
         } else if (state == PLAY_ROUND) {
             System.out.println("STATE == PLAY_ROUND: " + player);
             if (input instanceof List l) {
-                int score = intro.getGameState().calculateScore(l, currentQuestions);
+                int score = intro.getGameState().calculateScore(l, questions);
                 intro.getGameState().addPlayerScore(score, player);
             } else {
                 System.err.println(input.getClass().getSimpleName());
@@ -70,7 +69,7 @@ public class ServerProtocol {
         } else if (state == ANSWER_QUESTION) { //input == svar
             System.out.println("ANSWER_QUESTION: " + player);
             if (input instanceof List l) {
-                int score = intro.getGameState().calculateScore(l, currentQuestions);
+                int score = intro.getGameState().calculateScore(l, questions);
                 intro.getGameState().addPlayerScore(score, player);
             } else {
                 System.err.println(input.getClass().getSimpleName());

@@ -6,8 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,8 +91,8 @@ public class ResultPanel {
 
     public void updateResults() {
         if (gameState.getCurrentRound() > 0) {
-            player1Scores.add(new JLabel(String.valueOf(gameState.getScore(0)), SwingConstants.CENTER));
-            player2Scores.add(new JLabel(String.valueOf(gameState.getScore(1)), SwingConstants.CENTER));
+            player1Scores.add(new JLabel(String.valueOf(gameState.getScoreForRound(0)), SwingConstants.CENTER));
+            player2Scores.add(new JLabel(String.valueOf(gameState.getScoreForRound(1)), SwingConstants.CENTER));
             categories.add(new JLabel(String.valueOf(gameState.getCategories())));
         }
     }

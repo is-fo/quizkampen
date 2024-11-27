@@ -23,4 +23,9 @@ public class Score implements Serializable {
     public int getScoreForRound(int round) {
         return scores.get(round);
     }
+
+    @Override
+    public String toString() {
+        return scores.toString();
+    }
 }

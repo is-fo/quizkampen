@@ -52,8 +52,12 @@ public class GameState implements Serializable {
         currentRound++;
     }
 
-    public Integer getScore(int player) {
+    public Integer getScoreForRound(int player) {
         return playerScores.get(player).getScoreForRound(currentRound);
+    }
+
+    public Score getScoreForPlayer(int player) {
+        return playerScores.get(player);
     }
 
     public int getCurrentRound() {

@@ -13,8 +13,6 @@ public class CategoryPanel {
 
     private List<String> categories;
     private JPanel panel;
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
     private ObjectOutputStream oos;
     private JFrame categoryFrame;
 
