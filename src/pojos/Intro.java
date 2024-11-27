@@ -6,6 +6,7 @@ public class Intro implements Serializable {
 
     private int questionsPerRound;
     private int roundsPerGame;
+    private int player;
     private GameState gameState;
 
     public Intro(int questionsPerRound, int roundsPerGame, GameState gameState) {
@@ -14,12 +15,21 @@ public class Intro implements Serializable {
         this.gameState = gameState;
     }
 
+    public Intro(Intro intro, int player) {
+        this(intro.questionsPerRound, intro.roundsPerGame, intro.gameState);
+        this.player = player;
+    }
+
     public int getRoundsPerGame() {
         return roundsPerGame;
     }
 
     public int getQuestionsPerRound() {
         return questionsPerRound;
+    }
+
+    public int getPlayer() {
+        return player;
     }
 
     public GameState getGameState() {

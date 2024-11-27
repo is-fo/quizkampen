@@ -1,4 +1,5 @@
 package panels;
+
 import pojos.Connected;
 import pojos.GameState;
 import pojos.Score;
@@ -11,27 +12,23 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.swing.SwingConstants.*;
+import static javax.swing.SwingConstants.CENTER;
 
 public class ResultPanel {
 
-    private List<JLabel> player1Scores = new ArrayList<>();
-    private List<JLabel> categories = new ArrayList<>();
-    private List<JLabel> player2Scores = new ArrayList<>();
-    private JLabel scoreKeeping = new JLabel("0 - 0", CENTER);
-    private GameState gameState;
-    private CardLayout cardLayout;
-    private JPanel panel;
-    private JPanel resultPanel;
-    private JFrame resultFrame;
     JButton playButton;
-
-    private int roundsPerGame;
-    private ObjectOutputStream oos;
+    int player = -1;
+    private final List<JLabel> player1Scores = new ArrayList<>();
+    private final List<JLabel> categories = new ArrayList<>();
+    private final List<JLabel> player2Scores = new ArrayList<>();
+    private final JLabel scoreKeeping = new JLabel("0 - 0", CENTER);
+    private final JPanel panel;
+    private final JPanel resultPanel;
+    private JFrame resultFrame;
+    private final int roundsPerGame;
+    private final ObjectOutputStream oos;
 
     public ResultPanel(GameState gameState, ObjectOutputStream oos, int roundsPerGame) {
-        this.gameState = gameState;
-        this.cardLayout = new CardLayout();
         this.roundsPerGame = roundsPerGame;
         this.oos = oos;
         this.panel = new JPanel(new BorderLayout());
@@ -39,13 +36,16 @@ public class ResultPanel {
 
     }
 
-    public void createWindow() {
+    public void createWindow(int player) {
+        this.player = player;
         createResultFrame();
 
         JPanel titlePanel = new JPanel();
-        titlePanel.add(new JLabel("Spelare1", CENTER));
+        ImageIcon image1 = new ImageIcon(("src/images/" + (player) + ".png"));
+        ImageIcon image2 = new ImageIcon("src/images/" + ((player + 1) % 2) + ".png");
+        titlePanel.add(new JLabel(image1, CENTER));
         titlePanel.add(scoreKeeping);
-        titlePanel.add(new JLabel("Spelare2", CENTER));
+        titlePanel.add(new JLabel(image2, CENTER));
         panel.add(titlePanel, BorderLayout.NORTH);
 
 
@@ -90,19 +90,35 @@ public class ResultPanel {
         });
     }
 
-    public void updateWindow (List<Score> scores, List<String> categories) {
+    public void blablabla() {
+        for (int i = 0; i < roundsPerGame; i++) {
+            if (player1Scores.get(i).getText().equals(" ")) {
+                player1Scores.get(i).setText("?");
+                return;
+            } else if (player2Scores.get(i).getText().equals(" ")) {
+                player2Scores.get(i).setText("?");
+                return;
+            }
+        }
+
+        System.out.println("failfailfail");
+    }
+
+    public void updateWindow(List<Score> scores, List<String> categories) {
+        int left = player;
+        int right = (player + 1) % 2;
         int p1score = 0;
-        for (int i = 0; i < scores.get(0).getScores().size(); i++) { //spelare 1
-            player1Scores.get(i).setText(String.valueOf(scores.get(0).getScores().get(i)));
-            p1score += scores.get(0).getScores().get(i);
+        for (int i = 0; i < scores.get(left).getScores().size(); i++) { //spelare 1
+            player1Scores.get(i).setText(String.valueOf(scores.get(left).getScores().get(i)));
+            p1score += scores.get(left).getScores().get(i);
         }
         int p2score = 0;
-        for (int i = 0; i < scores.get(1).getScores().size(); i++) { //spelare 2
-            player2Scores.get(i).setText(String.valueOf(scores.get(1).getScores().get(i)));
-            p2score += scores.get(1).getScores().get(i);
+        for (int i = 0; i < scores.get(right).getScores().size(); i++) { //spelare 2
+            player2Scores.get(i).setText(String.valueOf(scores.get(right).getScores().get(i)));
+            p2score += scores.get(right).getScores().get(i);
         }
         for (int i = 0; i < categories.size(); i++) {
-            this.categories.get(i).setText(categories.get(i));
+            this.categories.get(i).setIcon(new ImageIcon("src/images/"  + categories.get(i) + ".png"));
         }
         scoreKeeping.setText(p1score + " - " + p2score);
 
@@ -120,6 +136,7 @@ public class ResultPanel {
         resultFrame.setVisible(true);
 
     }
+
     private void hideFrame() {
         resultFrame.setVisible(false);
     }
@@ -128,16 +145,12 @@ public class ResultPanel {
         resultFrame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        ResultPanel rp = new ResultPanel(null, null, 6);
-        rp.createWindow();
-    }
-
     public void disablePlayButton() {
         playButton.setEnabled(false);
         resultFrame.revalidate();
         resultFrame.repaint();
     }
+
     public void enablePlayButton() {
         playButton.setEnabled(true);
         resultFrame.revalidate();

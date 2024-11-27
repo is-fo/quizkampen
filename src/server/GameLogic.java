@@ -1,11 +1,13 @@
 package server;
 
+import pojos.Connected;
 import pojos.EndGame;
 import pojos.GameState;
 import pojos.Intro;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 import java.util.Properties;
 
 import static server.Server.MAX_CLIENTS;
@@ -44,7 +46,7 @@ public class GameLogic implements Runnable {
 
         for (int i = 0; i < MAX_CLIENTS; i++) {
             try {
-                out[i].writeObject(intro);
+                out[i].writeObject(new Intro(intro, i));
             } catch (IOException e) {
                 System.err.println("Error intro: " + e.getMessage());
             }
@@ -63,23 +65,32 @@ public class GameLogic implements Runnable {
                     System.out.println("Sent:  " + processed + " to client: " + (currentClient));
                     out[currentClient].reset();
                     if (processed instanceof GameState) {
-                        currentClient = (currentClient + 1) % MAX_CLIENTS; //nextClient()
+                        currentClient = nextClient(currentClient);
                     } else if (processed instanceof EndGame) {
-                        currentClient = (currentClient + 1) % MAX_CLIENTS;
+                        currentClient = nextClient(currentClient);
                         out[currentClient].writeObject(processed);
                         System.out.println("Game ended. Closing connections...");
                         closeConnections();
+                    } else if (processed instanceof List<?>) {
+                        if (!((List<?>) processed).isEmpty() && ((List<?>) processed).get(0) instanceof String) {
+                            System.out.println("Sent notification to nextclient=)");
+                            out[nextClient(currentClient)].writeObject(new Connected());
+                        }
                     }
                 }
 
             } catch (ClassNotFoundException e) {
                 System.err.println("Error reading object: " + e.getMessage());
-            } catch (IOException e) {
+            } catch (IOException | RuntimeException e) {
                 System.err.println("Error reading from client, closing connections." + e.getMessage());
                 closeConnections();
                 break;
             }
         }
+    }
+
+    private int nextClient(int i) {
+        return (i + 1) % MAX_CLIENTS;
     }
 
     private void closeConnections() {

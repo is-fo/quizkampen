@@ -3,11 +3,7 @@ package client;
 import panels.CategoryPanel;
 import panels.QuestionPanel;
 import panels.ResultPanel;
-import pojos.EndGame;
-import pojos.Intro;
-import pojos.Question;
-import pojos.Waiting;
-import pojos.GameState;
+import pojos.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -25,6 +21,7 @@ public class Client {
         String hostName = "localhost";
         int portNumber = 55555;
 
+
         try (
             Socket addressSocket = new Socket(hostName, portNumber);
             ObjectOutputStream oos = new ObjectOutputStream(addressSocket.getOutputStream());
@@ -35,42 +32,45 @@ public class Client {
                 Object fromServer = ois.readObject();
 
                 if (fromServer instanceof Intro i) {
-                    System.out.println(i.getGameState());
                     resultPanel = new ResultPanel(i.getGameState(), oos, i.getRoundsPerGame());
-                    resultPanel.createWindow();
+                    resultPanel.createWindow(i.getPlayer());
                 } else if (fromServer instanceof List<?> receivedList) {
                     resultPanel.enablePlayButton();
                     if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question q) {
                         QuestionPanel qp = new QuestionPanel((List<Question>) receivedList, oos);
                         qp.drawAll();
                     } else if (!receivedList.isEmpty() && receivedList.getFirst() instanceof String) {
-                        //resultPanel.enablePlayButton();
                         CategoryPanel cp = new CategoryPanel((List<String>) fromServer, oos);
                         cp.drawCategories();
                     }
-                    } else if (fromServer instanceof GameState g) {
-                        assert resultPanel != null;
-                        resultPanel.updateWindow(g.getPlayerScores(), g.getCategories());
-                    } else if (fromServer instanceof Waiting) {
-                        resultPanel.disablePlayButton();
-                        oos.writeObject(fromServer);
-                    } else if (fromServer instanceof EndGame eg) {
-                        oos.close();
-                        ois.close();
-                        addressSocket.close();
-                        resultPanel.updateWindow(eg.getGameState().getPlayerScores(), eg.getGameState().getCategories());
-                        resultPanel.disablePlayButton();
+                } else if (fromServer instanceof GameState g) {
+                    assert resultPanel != null;
+                    resultPanel.updateWindow(g.getPlayerScores(), g.getCategories());
+                } else if (fromServer instanceof Waiting) {
+                    resultPanel.disablePlayButton();
+                    oos.writeObject(fromServer);
+                } else if (fromServer instanceof EndGame eg) {
+                    oos.close();
+                    ois.close();
+                    addressSocket.close();
+                    resultPanel.updateWindow(eg.getGameState().getPlayerScores(), eg.getGameState().getCategories());
+                    resultPanel.disablePlayButton();
                     break;
-
+                } else if (fromServer instanceof Connected) {
+                    if (resultPanel != null) {
+                        System.out.println("CONNECTED ?! ?! ?!!?!?!");
+                        resultPanel.blablabla();
                     }
-                    oos.flush();
+                }
+                oos.flush();
                 }
             } catch (ClassNotFoundException e) {
             e.printStackTrace();
             System.err.println("Error reading object from server: " + e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(12);
+            }
     }
 
     public static void main(String[] args) {
