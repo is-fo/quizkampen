@@ -85,6 +85,8 @@ public class Categories implements Serializable {
 
     public List<String> getCategoriesStringList ( int categoriesToGenerate){
 
+        categoriesToGenerate = (categoriesToGenerate > allQuestions.size()) ? allQuestions.size() : categoriesToGenerate;
+
         Random rand = new Random();
 
         HashSet<Integer> s = new HashSet<Integer>();
