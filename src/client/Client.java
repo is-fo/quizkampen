@@ -22,7 +22,7 @@ public class Client {
     private int roundsPerGame;
 
     Client() {
-        String hostName = "172.20.205.138";
+        String hostName = "192.168.0.35";
         int portNumber = 55555;
 
         try (
@@ -56,6 +56,8 @@ public class Client {
 //                    oos.writeObject(fromServer);
                     ResultPanel rp = new ResultPanel(gameState, oos, 2);
                     rp.drawResult();
+                    rp.updateResults();
+                    rp.updateRound();
                 } else if (fromServer instanceof Waiting) {
                     oos.writeObject(fromServer);
                 } else if (fromServer instanceof EndGame) {

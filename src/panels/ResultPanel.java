@@ -22,7 +22,7 @@ public class ResultPanel {
     private JPanel panel;
     private JPanel cardPanel;
     private JFrame resultFrame;
-    private int currentRound;
+
     private int roundsPerGame;
     private ObjectOutputStream oos;
 
@@ -40,14 +40,14 @@ public class ResultPanel {
         createResultFrame();
         panel = new JPanel(new BorderLayout(10, 10));
         JPanel resultPanel = new JPanel(new GridLayout(roundsPerGame + 1, 3, 5, 5));
-        resultPanel.add(new JLabel("player1", SwingConstants.CENTER));
+        resultPanel.add(new JLabel("Spelare1", SwingConstants.CENTER));
         resultPanel.add(new JLabel("Kategori", SwingConstants.CENTER));
-        resultPanel.add(new JLabel("player2", SwingConstants.CENTER));
+        resultPanel.add(new JLabel("Spelare2", SwingConstants.CENTER));
 
         for (int i = 0; i < roundsPerGame; i++) {
-            JLabel player1ScoreLabel = new JLabel("sp1", SwingConstants.CENTER);
-            JLabel categoryLabel = new JLabel("kat", SwingConstants.CENTER);
-            JLabel player2ScoreLabel = new JLabel("sp2", SwingConstants.CENTER);
+            JLabel player1ScoreLabel = new JLabel("", SwingConstants.CENTER);
+            JLabel categoryLabel = new JLabel("", SwingConstants.CENTER);
+            JLabel player2ScoreLabel = new JLabel("", SwingConstants.CENTER);
 
             player1Scores.add(player1ScoreLabel);
             categories.add(categoryLabel);
@@ -57,12 +57,6 @@ public class ResultPanel {
             resultPanel.add(categoryLabel);
             resultPanel.add(player2ScoreLabel);
 
-        }
-
-        for (int i = 0; i < roundsPerGame; i++) {
-            player1Scores.get(i).setText(String.valueOf(gameState.getPlayerScores().get(0).getScoreForRound(i)));
-            categories.get(i).setText(String.valueOf(gameState.getCategory(i)));
-            player2Scores.get(i).setText(String.valueOf(gameState.getPlayerScores().get(1).getScoreForRound(i)));
         }
 
         resultFrame.add(panel, BorderLayout.CENTER);
@@ -87,19 +81,22 @@ public class ResultPanel {
         resultFrame.repaint();
     }
 
-    public void updateRound(int round, int player1Score, int player2Score, String category) {
-        if (round < 1 || round > player1Scores.size()) {
-            throw new IllegalArgumentException("Omgången måste vara mellan 1 och 6.");
+    public void updateRound() {
+        for (int i = 0; i < roundsPerGame; i++) {
+            if (gameState.getCurrentRound() > 0) {
+                player1Scores.get(i).setText(String.valueOf(gameState.getPlayerScores().get(0).getScoreForRound(i)));
+                categories.get(i).setText(String.valueOf(gameState.getCategory(i)));
+                player2Scores.get(i).setText(String.valueOf(gameState.getPlayerScores().get(1).getScoreForRound(i)));
+            }
         }
-        player1Scores.get(round - 1).setText(String.valueOf(player1Score));
-        categories.get(round - 1).setText(category);
-        player2Scores.get(round - 1).setText(String.valueOf(player2Score));
     }
 
     public void updateResults() {
-        player1Scores.add(new JLabel(String.valueOf(gameState.getScore(0)), SwingConstants.CENTER));
-        player2Scores.add(new JLabel(String.valueOf(gameState.getScore(1)), SwingConstants.CENTER));
-        categories.add(new JLabel(String.valueOf(gameState.getCategories())));
+        if (gameState.getCurrentRound() > 0) {
+            player1Scores.add(new JLabel(String.valueOf(gameState.getScore(0)), SwingConstants.CENTER));
+            player2Scores.add(new JLabel(String.valueOf(gameState.getScore(1)), SwingConstants.CENTER));
+            categories.add(new JLabel(String.valueOf(gameState.getCategories())));
+        }
     }
 
     public void switchToResultPanel() {

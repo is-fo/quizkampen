@@ -4,18 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import static pojos.Categories.*;
-
 public class GameState implements Serializable {
 
-    private List<Score> playerScores = new ArrayList<>();
-    private List<String> categories = new ArrayList<>();
-    private List<Question> questions = new ArrayList<>();
-    private int currentRound = 0;
-    private int category = SPORT;
+    private final List<Score> playerScores = new ArrayList<>();
+    private final List<String> categories = new ArrayList<>();
 
-    public GameState(int numRounds, int numQuestions) {
+    private int currentRound = 0;
+
+    public GameState() {
 
         for (int i = 0; i < 2; i++) {
             playerScores.add(new Score());
@@ -49,7 +45,7 @@ public class GameState implements Serializable {
     }
 
     public void addPlayerScore(int score, int player) {
-        playerScores.get(player).addScore(currentRound, score);
+        playerScores.get(player).addScore(score);
     }
 
     public void incrementRound() {

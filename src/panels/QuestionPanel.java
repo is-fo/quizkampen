@@ -19,9 +19,6 @@ public class QuestionPanel {
     private List<String> selectedAnswers = new ArrayList<>();
     private ObjectOutputStream oos;
 
-    int index = 0;
-    public boolean done = false;
-
     public QuestionPanel(List<Question> questions, ObjectOutputStream oos) {
         this.questions = questions;
         this.cardPanel = new JPanel();
@@ -102,10 +99,6 @@ public class QuestionPanel {
 
         selectedAnswers.add(selectedAnswer);
     }
-
-    public JPanel getCardPanel() {
-    return cardPanel;
-}
 
     public void showQuestionFrame() {
         questionFrame = new JFrame("QuizKampen");
