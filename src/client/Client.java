@@ -40,10 +40,19 @@ public class Client {
                     resultPanel.createWindow();
                 } else if (fromServer instanceof List<?> receivedList) {
                     if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question) {
+
+                } else if (fromServer instanceof String) {
+                    System.out.println(fromServer + "<- category received");
+                    oos.writeObject("Sport");
+                } else if (fromServer instanceof List<?>) {
+                    resultPanel.enablePlayButton();
+                    List<?> receivedList = (List<?>) fromServer;
+                    if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question q) {
                         QuestionPanel qp = new QuestionPanel((List<Question>) receivedList, oos);
                         qp.drawAll();
                     }
                     else if (!receivedList.isEmpty() && receivedList.getFirst() instanceof String) {
+                        //resultPanel.enablePlayButton();
                         CategoryPanel cp = new CategoryPanel((List<String>)fromServer, oos);
                         cp.drawCategories();
                     }
@@ -51,8 +60,10 @@ public class Client {
                     assert resultPanel != null;
                     resultPanel.updateWindow(g.getPlayerScores());
                 } else if (fromServer instanceof Waiting) {
+                    resultPanel.disablePlayButton();
                     oos.writeObject(fromServer);
                 } else if (fromServer instanceof EndGame) {
+                    resultPanel.disablePlayButton();
                     oos.close();
                     ois.close();
                     addressSocket.close();
@@ -67,6 +78,7 @@ public class Client {
             e.printStackTrace();
         }
     }
+
 
 
     public static void main(String[] args) {

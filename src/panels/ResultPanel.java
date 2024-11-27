@@ -21,6 +21,7 @@ public class ResultPanel {
     private JPanel panel;
     private JPanel resultPanel;
     private JFrame resultFrame;
+    JButton playButton;
 
     private int roundsPerGame;
     private ObjectOutputStream oos;
@@ -67,7 +68,8 @@ public class ResultPanel {
 
     public void createButton() {
 
-        JButton playButton = new JButton("Spela");
+        playButton = new JButton("Spela");
+        playButton.setEnabled(false);
         panel.add(playButton, BorderLayout.SOUTH);
         playButton.addActionListener(new ActionListener() {
             @Override
@@ -118,6 +120,17 @@ public class ResultPanel {
     public static void main(String[] args) {
         ResultPanel rp = new ResultPanel(null, null, 6);
         rp.createWindow();
+    }
+
+    public void disablePlayButton() {
+        playButton.setEnabled(false);
+        resultFrame.revalidate();
+        resultFrame.repaint();
+    }
+    public void enablePlayButton() {
+        playButton.setEnabled(true);
+        resultFrame.revalidate();
+        resultFrame.repaint();
     }
 
 }
