@@ -52,7 +52,7 @@ public class QuestionPanel {
                     handleAnswerSelection(answerButton, answerButton.getText(), finalIndex);
                     System.out.println(getAnswers());
 
-                    Timer timer = new Timer(1000, e2 -> {
+                    Timer timer = new Timer(10, e2 -> {
                         if (finalIndex < questions.size() - 1) {
                             cardLayout.next(cardPanel);
                         } else {
