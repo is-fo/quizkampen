@@ -48,7 +48,6 @@ public class ServerProtocol {
             state = PLAY_ROUND;
         } else if (state == PLAY_ROUND) {
             System.out.println("STATE == PLAY_ROUND: " + player);
-            List<Score> currentScore;
             if (input instanceof List l) {
                 int score = intro.getGameState().calculateScore(l, questions);
                 intro.getGameState().addPlayerScore(score, player);
@@ -65,12 +64,10 @@ public class ServerProtocol {
             state = SHOW_RESULTS;
         } else if (state == SHOW_RESULTS) {
             System.out.println("STATE == SHOW_RESULTS: " + player);
-            if (intro.getGameState().getCurrentRound() > intro.getRoundsPerGame()) {
-                return new EndGame();
-            } else {
-                output = new Waiting();
-                state = WAITING;
-            }
+
+            output = new Waiting();
+            state = WAITING;
+
         } else if (state == ANSWER_QUESTION) { //input == svar
             System.out.println("ANSWER_QUESTION: " + player);
             if (input instanceof List l) {
@@ -80,9 +77,9 @@ public class ServerProtocol {
                 System.err.println(input.getClass().getSimpleName());
                 throw new RuntimeException("Not a list");
             }
-            if (intro.getGameState().getCurrentRound() > intro.getRoundsPerGame()) {
+            if (intro.getGameState().getCurrentRound() >= intro.getRoundsPerGame() && player == 1) {
                 System.out.println("SPECIAL END GAME ANSWER LAST");
-                return new EndGame();
+                return new EndGame(intro.getGameState());
             }
             output = categories.getCategoriesStringList(CATEGORIES_TO_GENERATE);
             state = CATEGORY_CHOSEN;
