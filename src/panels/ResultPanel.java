@@ -61,6 +61,8 @@ public class ResultPanel {
 
         panel.setVisible(true);
         resultFrame.add(panel);
+        resultFrame.repaint();
+        resultFrame.revalidate();
     }
 
     public void createButton() {
