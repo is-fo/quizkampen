@@ -1,5 +1,6 @@
 package server;
 
+import pojos.EndGame;
 import pojos.GameState;
 import pojos.Intro;
 
@@ -63,6 +64,19 @@ public class GameLogic implements Runnable {
                     out[currentClient].reset();
                     if (processed instanceof GameState) {
                         currentClient = (currentClient + 1) % MAX_CLIENTS; //nextClient()
+                    } else if (processed instanceof EndGame) {
+                        currentClient = 0;
+                        out[currentClient].writeObject(processed);
+                        System.out.println("Game ended. Closing connections...");
+                        for (int i = 0; i < MAX_CLIENTS; i++) {
+                            try {
+                                clientSockets[i].close();
+                                in[i].close();
+                                out[i].close();
+                            } catch (IOException ex) {
+                                System.err.println("Error closing socket connections: " + ex.getMessage());
+                            }
+                        }
                     }
                 }
 
