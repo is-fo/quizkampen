@@ -106,8 +106,12 @@ public class ResultPanel {
         resultFrame.setSize(800, 700);
         resultFrame.setLocationRelativeTo(null);
         resultFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        resultFrame.setVisible(true);
 
+
+        ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("images/timer.png"));
+        JLabel imageLabel = new JLabel(icon, SwingConstants.CENTER);
+        resultFrame.add(imageLabel, BorderLayout.CENTER);
+        resultFrame.setVisible(true);
     }
     private void hideFrame() {
         resultFrame.setVisible(false);
