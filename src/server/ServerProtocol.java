@@ -77,7 +77,7 @@ public class ServerProtocol {
                 System.err.println(input.getClass().getSimpleName());
                 throw new RuntimeException("Not a list");
             }
-            if (intro.getGameState().getCurrentRound() >= intro.getRoundsPerGame() && player == 1) {
+            if (intro.getGameState().getCurrentRound() >= intro.getRoundsPerGame()) {
                 System.out.println("SPECIAL END GAME ANSWER LAST");
                 return new EndGame(intro.getGameState());
             }

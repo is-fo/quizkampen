@@ -65,18 +65,10 @@ public class GameLogic implements Runnable {
                     if (processed instanceof GameState) {
                         currentClient = (currentClient + 1) % MAX_CLIENTS; //nextClient()
                     } else if (processed instanceof EndGame) {
-                        currentClient = 0;
+                        currentClient = (currentClient + 1) % MAX_CLIENTS;
                         out[currentClient].writeObject(processed);
                         System.out.println("Game ended. Closing connections...");
-                        for (int i = 0; i < MAX_CLIENTS; i++) {
-                            try {
-                                clientSockets[i].close();
-                                in[i].close();
-                                out[i].close();
-                            } catch (IOException ex) {
-                                System.err.println("Error closing socket connections: " + ex.getMessage());
-                            }
-                        }
+                        closeConnections();
                     }
                 }
 
@@ -84,16 +76,20 @@ public class GameLogic implements Runnable {
                 System.err.println("Error reading object: " + e.getMessage());
             } catch (IOException e) {
                 System.err.println("Error reading from client, closing connections." + e.getMessage());
-                for (int i = 0; i < MAX_CLIENTS; i++) {
-                    try {
-                        clientSockets[i].close();
-                        in[i].close();
-                        out[i].close();
-                    } catch (IOException ex) {
-                        System.err.println("Error closing socket connections: " + ex.getMessage());
-                    }
-                }
+                closeConnections();
                 break;
+            }
+        }
+    }
+
+    private void closeConnections() {
+        for (int i = 0; i < MAX_CLIENTS; i++) {
+            try {
+                clientSockets[i].close();
+                in[i].close();
+                out[i].close();
+            } catch (IOException ex) {
+                System.err.println("Error closing socket connections: " + ex.getMessage());
             }
         }
     }
