@@ -19,7 +19,6 @@ public class Client {
         String hostName = "localhost";
         int portNumber = 55555;
 
-
         try (
             Socket addressSocket = new Socket(hostName, portNumber);
             ObjectOutputStream oos = new ObjectOutputStream(addressSocket.getOutputStream());
