@@ -58,8 +58,11 @@ public class Client {
                     break;
                 } else if (fromServer instanceof Connected) {
                     if (resultPanel != null) {
-                        System.out.println("CONNECTED ?! ?! ?!!?!?!");
                         resultPanel.notifyNextPlayer();
+                    }
+                } else if (fromServer instanceof String s) {
+                    if (resultPanel != null) {
+                        resultPanel.notifyNextPlayer(s);
                     }
                 }
                 oos.flush();

@@ -99,6 +99,16 @@ public class ResultPanel {
         }
     }
 
+    public void notifyNextPlayer(String cat) {
+        for (int i = 0; i < categories.size(); i++) {
+            if (categories.get(i).getText().equals(" ")) {
+                categories.get(i).setIcon(new ImageIcon("src/images/" + (cat) + ".png"));
+                categories.get(i).setText("");
+                return;
+            }
+        }
+    }
+
     public void updateWindow(List<Score> scores, List<String> categories) {
         int left = player;
         int right = (player + 1) % 2;
@@ -114,6 +124,9 @@ public class ResultPanel {
         }
         for (int i = 0; i < categories.size(); i++) {
             this.categories.get(i).setIcon(new ImageIcon("src/images/"  + categories.get(i) + ".png"));
+            if (this.categories.get(i).getIcon() != null) {
+                this.categories.get(i).setText("");
+            }
         }
         scoreKeeping.setText(p1score + " - " + p2score);
 

@@ -59,6 +59,9 @@ public class GameLogic implements Runnable {
                 Object o;
                 while ((o = in[currentClient].readObject()) != null) {
                     System.out.println("Received: " + o + " client: " + (currentClient));
+                    if (o instanceof String s) {
+                        out[nextClient(currentClient)].writeObject(s);
+                    }
                     Object processed;
                     processed = protocol.processInput(o, currentClient, intro);
                     out[currentClient].writeObject(processed);
