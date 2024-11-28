@@ -2,8 +2,6 @@ package panels;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
@@ -18,8 +16,7 @@ public class CategoryPanel {
     public CategoryPanel(List<String> categories, ObjectOutputStream oos) {
         this.categories = categories;
         this.oos = oos;
-        this.panel = new JPanel(new BorderLayout());;
-//        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        this.panel = new JPanel(new BorderLayout());
     }
 
     public void drawCategories() {
@@ -31,18 +28,15 @@ public class CategoryPanel {
             JButton categoryButton = new JButton(category);
             categoryButton.setFont(new Font("Arial", Font.BOLD, 18));
             categoryButton.setPreferredSize(new Dimension(200, 100));
-            categoryButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.out.println("Kategori vald: " + category);
-                    try {
-                        oos.writeObject(category);
-                        oos.flush();
-                        closeCategoryFrame();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        JOptionPane.showMessageDialog(panel, "Fel vid kommunikation med servern.");
-                    }
+            categoryButton.addActionListener(e -> {
+                System.out.println("Kategori vald: " + category);
+                try {
+                    oos.writeObject(category);
+                    oos.flush();
+                    closeCategoryFrame();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(panel, "Fel vid kommunikation med servern.");
                 }
             });
             buttonPanel.add(categoryButton);

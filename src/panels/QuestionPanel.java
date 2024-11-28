@@ -13,7 +13,6 @@ public class QuestionPanel {
 
     private JFrame questionFrame;
     private List<Question> questions;
-    private JPanel panel;
     private CardLayout cardLayout;
     private JPanel cardPanel;
     private List<String> selectedAnswers = new ArrayList<>();
@@ -30,7 +29,7 @@ public class QuestionPanel {
     public void drawAll() {
 
         for (int index = 0; index < questions.size(); index++) {
-            panel = new JPanel(new BorderLayout(10, 10));
+            JPanel panel = new JPanel(new BorderLayout(10, 10));
             JPanel questionPanel = new JPanel();
             questionPanel.setBackground(Color.LIGHT_GRAY);
             questionPanel.setLayout(new BorderLayout());

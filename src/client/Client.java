@@ -14,8 +14,6 @@ import java.util.List;
 
 public class Client {
 
-    private int roundsPerGame;
-
     @SuppressWarnings("unchecked")
     Client() {
         String hostName = "localhost";
@@ -36,7 +34,7 @@ public class Client {
                     resultPanel.createWindow(i.getPlayer());
                 } else if (fromServer instanceof List<?> receivedList) {
                     resultPanel.enablePlayButton();
-                    if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question q) {
+                    if (!receivedList.isEmpty() && receivedList.getFirst() instanceof Question) {
                         QuestionPanel qp = new QuestionPanel((List<Question>) receivedList, oos);
                         qp.drawAll();
                     } else if (!receivedList.isEmpty() && receivedList.getFirst() instanceof String) {
