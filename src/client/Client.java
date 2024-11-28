@@ -32,7 +32,7 @@ public class Client {
                 Object fromServer = ois.readObject();
 
                 if (fromServer instanceof Intro i) {
-                    resultPanel = new ResultPanel(i.getGameState(), oos, i.getRoundsPerGame());
+                    resultPanel = new ResultPanel(oos, i.getRoundsPerGame());
                     resultPanel.createWindow(i.getPlayer());
                 } else if (fromServer instanceof List<?> receivedList) {
                     resultPanel.enablePlayButton();
@@ -59,7 +59,7 @@ public class Client {
                 } else if (fromServer instanceof Connected) {
                     if (resultPanel != null) {
                         System.out.println("CONNECTED ?! ?! ?!!?!?!");
-                        resultPanel.blablabla();
+                        resultPanel.notifyNextPlayer();
                     }
                 }
                 oos.flush();

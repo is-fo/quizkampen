@@ -1,5 +1,7 @@
 package pojos;
 
+import server.Server;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,7 @@ public class GameState implements Serializable {
 
     public GameState() {
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < Server.MAX_CLIENTS; i++) {
             playerScores.add(new Score());
         }
     }
@@ -50,7 +52,6 @@ public class GameState implements Serializable {
 
     public void addPlayerScore(int score, int player) {
         playerScores.get(player).addScore(score);
-        System.out.println(playerScores + " <---- addPlayerScore()");
     }
 
     public void incrementRound() {
@@ -70,12 +71,7 @@ public class GameState implements Serializable {
     }
 
     public List<Score> getPlayerScores() {
-        System.out.println(playerScores + "<----- getPlayerScores()");
         return playerScores;
-    }
-
-    public GameState getGamestate() {
-        return this;
     }
 
     @Override

@@ -12,14 +12,6 @@ public class Categories implements Serializable {
     public static final int MUSIC = 4;
     public static final int MOVIE = 5;
 
-
-    private List<Question> currentQuestions;
-    private final List<Question> sportQuestions = new ArrayList<>();
-    private final List<Question> geographyQuestions = new ArrayList<>();
-    private final List<Question> scienceQuestions = new ArrayList<>();
-    private final List<Question> historyQuestions = new ArrayList<>();
-    private final List<Question> musicQuestions = new ArrayList<>();
-    private final List<Question> movieQuestions = new ArrayList<>();
     private final List<List<Question>> allQuestions = new ArrayList<>();
 
     public Categories() {
@@ -121,6 +113,7 @@ public class Categories implements Serializable {
         Question movie6 = new Question("Vilken film handlar om superhjältar?", answersMovies6, answersMovies6.get(0));
 
         // Lägg till frågorna i respektive kategorier
+        List<Question> sportQuestions = new ArrayList<>();
         sportQuestions.add(sport1);
         sportQuestions.add(sport2);
         sportQuestions.add(sport3);
@@ -128,6 +121,7 @@ public class Categories implements Serializable {
         sportQuestions.add(sport5);
         sportQuestions.add(sport6);
 
+        List<Question> geographyQuestions = new ArrayList<>();
         geographyQuestions.add(geography1);
         geographyQuestions.add(geography2);
         geographyQuestions.add(geography3);
@@ -135,6 +129,7 @@ public class Categories implements Serializable {
         geographyQuestions.add(geography5);
         geographyQuestions.add(geography6);
 
+        List<Question> scienceQuestions = new ArrayList<>();
         scienceQuestions.add(science1);
         scienceQuestions.add(science2);
         scienceQuestions.add(science3);
@@ -142,6 +137,7 @@ public class Categories implements Serializable {
         scienceQuestions.add(science5);
         scienceQuestions.add(science6);
 
+        List<Question> historyQuestions = new ArrayList<>();
         historyQuestions.add(history1);
         historyQuestions.add(history2);
         historyQuestions.add(history3);
@@ -149,6 +145,7 @@ public class Categories implements Serializable {
         historyQuestions.add(history5);
         historyQuestions.add(history6);
 
+        List<Question> musicQuestions = new ArrayList<>();
         musicQuestions.add(music1);
         musicQuestions.add(music2);
         musicQuestions.add(music3);
@@ -156,6 +153,7 @@ public class Categories implements Serializable {
         musicQuestions.add(music5);
         musicQuestions.add(music6);
 
+        List<Question> movieQuestions = new ArrayList<>();
         movieQuestions.add(movie1);
         movieQuestions.add(movie2);
         movieQuestions.add(movie3);
@@ -169,10 +167,6 @@ public class Categories implements Serializable {
         allQuestions.add(historyQuestions);
         allQuestions.add(musicQuestions);
         allQuestions.add(movieQuestions);
-    }
-
-    public List<Question> getCategory(int category) {
-        return allQuestions.get(category);
     }
 
     public String getCategoryString(int category) {
@@ -197,14 +191,6 @@ public class Categories implements Serializable {
             case "Movie" -> MOVIE;
             default -> -1;
         };
-    }
-
-    public void setCurrentCategory(List<Question> category) {
-        currentQuestions = category;
-    }
-
-    public List<Question> getCurrentQuestions() {
-        return currentQuestions;
     }
 
     public List<Question> getNQuestions(int amount, int category) {

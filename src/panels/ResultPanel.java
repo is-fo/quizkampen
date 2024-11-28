@@ -1,13 +1,10 @@
 package panels;
 
 import pojos.Connected;
-import pojos.GameState;
 import pojos.Score;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +25,7 @@ public class ResultPanel {
     private final int roundsPerGame;
     private final ObjectOutputStream oos;
 
-    public ResultPanel(GameState gameState, ObjectOutputStream oos, int roundsPerGame) {
+    public ResultPanel(ObjectOutputStream oos, int roundsPerGame) {
         this.roundsPerGame = roundsPerGame;
         this.oos = oos;
         this.panel = new JPanel(new BorderLayout());
@@ -44,6 +41,7 @@ public class ResultPanel {
         ImageIcon image1 = new ImageIcon(("src/images/" + (player) + ".png"));
         ImageIcon image2 = new ImageIcon("src/images/" + ((player + 1) % 2) + ".png");
         titlePanel.add(new JLabel(image1, CENTER));
+        scoreKeeping.setFont(new Font("Consolas", Font.PLAIN, 32));
         titlePanel.add(scoreKeeping);
         titlePanel.add(new JLabel(image2, CENTER));
         panel.add(titlePanel, BorderLayout.NORTH);
@@ -54,6 +52,9 @@ public class ResultPanel {
             player1Scores.add(new JLabel(" ", CENTER));
             categories.add(new JLabel(" ", CENTER));
             player2Scores.add(new JLabel(" ", CENTER));
+
+            player1Scores.get(i).setFont(new Font("Consolas", Font.PLAIN, 32));
+            player2Scores.get(i).setFont(new Font("Consolas", Font.PLAIN, 32));
 
             resultPanel.add(player1Scores.get(i));
             resultPanel.add(categories.get(i));
@@ -74,23 +75,19 @@ public class ResultPanel {
         playButton = new JButton("Spela");
         playButton.setEnabled(true);
         panel.add(playButton, BorderLayout.SOUTH);
-        playButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Spela klickad");
-                try {
-                    oos.writeObject(new Connected());
-                    oos.flush();
-                    hideFrame();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    System.err.println("Fel vid kommunikation med servern: " + ex.getCause());
-                }
+        playButton.addActionListener(e -> {
+            try {
+                oos.writeObject(new Connected());
+                oos.flush();
+                hideFrame();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.err.println("Fel vid kommunikation med servern: " + ex.getCause());
             }
         });
     }
 
-    public void blablabla() {
+    public void notifyNextPlayer() {
         for (int i = 0; i < roundsPerGame; i++) {
             if (player1Scores.get(i).getText().equals(" ")) {
                 player1Scores.get(i).setText("?");
@@ -100,8 +97,6 @@ public class ResultPanel {
                 return;
             }
         }
-
-        System.out.println("failfailfail");
     }
 
     public void updateWindow(List<Score> scores, List<String> categories) {
@@ -134,7 +129,6 @@ public class ResultPanel {
         resultFrame.setLocationRelativeTo(null);
         resultFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         resultFrame.setVisible(true);
-
     }
 
     private void hideFrame() {

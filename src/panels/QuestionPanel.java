@@ -43,33 +43,7 @@ public class QuestionPanel {
 
             JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
             for (String answer : questions.get(index).getAnswers()) {
-                JButton answerButton = new JButton(answer);
-                answerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-                int finalIndex = index;
-                answerButton.addActionListener(e -> {
-
-                    handleAnswerSelection(answerButton, answerButton.getText(), finalIndex);
-                    System.out.println(getAnswers());
-
-                    Timer timer = new Timer(10, e2 -> {
-                        if (finalIndex < questions.size() - 1) {
-                            cardLayout.next(cardPanel);
-                        } else {
-                            hideQuestionFrame();
-                            try {
-                                oos.writeObject(getAnswers());
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                                System.err.println("Error sending answer list to server: " + ex.getMessage());
-                            }
-                        }
-                        ((Timer) e2.getSource()).stop();
-                    });
-                    timer.setRepeats(false);
-                    timer.start();
-
-                });
+                JButton answerButton = createAnswerButton(answer, index);
                 buttonPanel.add(answerButton);
             }
             panel.add(buttonPanel, BorderLayout.CENTER);
@@ -78,6 +52,36 @@ public class QuestionPanel {
 
         }
         showQuestionFrame();
+    }
+
+    private JButton createAnswerButton(String answer, int index) {
+        JButton answerButton = new JButton(answer);
+        answerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        answerButton.addActionListener(e -> {
+
+            handleAnswerSelection(answerButton, answerButton.getText(), index);
+            System.out.println(getAnswers());
+
+            Timer timer = new Timer(686, e2 -> {
+                if (index < questions.size() - 1) {
+                    cardLayout.next(cardPanel);
+                } else {
+                    hideQuestionFrame();
+                    try {
+                        oos.writeObject(getAnswers());
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        System.err.println("Error sending answer list to server: " + ex.getMessage());
+                    }
+                }
+                ((Timer) e2.getSource()).stop();
+            });
+            timer.setRepeats(false);
+            timer.start();
+
+        });
+        return answerButton;
     }
 
     private void handleAnswerSelection(JButton button, String selectedAnswer, int index) {

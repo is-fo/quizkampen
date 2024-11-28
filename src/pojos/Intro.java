@@ -33,7 +33,6 @@ public class Intro implements Serializable {
     }
 
     public GameState getGameState() {
-        System.out.println(gameState + "<-------------getGameState()");
         return gameState;
     }
 }

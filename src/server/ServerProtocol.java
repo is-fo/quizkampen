@@ -16,7 +16,7 @@ public class ServerProtocol {
 
     private int state = WAITING;
     private Categories categories = new Categories();
-    private  List<Question> questions = new ArrayList<>(2);
+    private  List<Question> questions = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
     public synchronized Object processInput(Object input, int player, Intro intro) {
@@ -42,7 +42,6 @@ public class ServerProtocol {
 
             questions = categories.getNQuestions(intro.getQuestionsPerRound(), currentCategory); //hämtar frågor från kategorin
             output = questions;
-            categories.setCurrentCategory(questions);
 
             intro.getGameState().incrementRound();
             state = PLAY_ROUND;
@@ -78,7 +77,7 @@ public class ServerProtocol {
                 throw new RuntimeException("Not a list");
             }
             if (intro.getGameState().getCurrentRound() >= intro.getRoundsPerGame()) {
-                System.out.println("SPECIAL END GAME ANSWER LAST");
+                System.out.println("Game ended!");
                 return new EndGame(intro.getGameState());
             }
             output = categories.getCategoriesStringList(CATEGORIES_TO_GENERATE);

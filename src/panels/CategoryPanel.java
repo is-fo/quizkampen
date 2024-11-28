@@ -7,8 +7,6 @@ import java.awt.event.ActionListener;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
-
-//TODO Katogori knappar storlek
 public class CategoryPanel {
 
     private List<String> categories;
@@ -21,7 +19,7 @@ public class CategoryPanel {
         this.categories = categories;
         this.oos = oos;
         this.panel = new JPanel(new BorderLayout());;
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+//        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     }
 
     public void drawCategories() {
@@ -54,13 +52,10 @@ public class CategoryPanel {
         categoryFrame.add(panel);
     }
 
-    public JPanel getPanel() {
-        return panel;
-    }
-
     private void createCategoryFrame() {
         categoryFrame = new JFrame("QuizKampen");
         categoryFrame.setSize(800, 600);
+        categoryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         categoryFrame.setLocationRelativeTo(null);
         categoryFrame.setVisible(true);
     }
